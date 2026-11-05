@@ -38,6 +38,11 @@
     for ($i = 0; $i < $repeatCount; $i++) {
         $expandedLogos = $expandedLogos->concat($partnerLogos);
     }
+
+    $stripLogoHeight = (int)(($settings['partner_strip_logo_height'] ?? null) ?: (\App\Models\SiteSetting::where('key', 'partner_strip_logo_height')->value('value') ?: 95));
+    $cardHeight = $stripLogoHeight + 35;
+    $cardWidth = max(260, (int)($stripLogoHeight * 3.1));
+    $imgMaxWidth = (int)($cardWidth * 0.82);
 @endphp
 
 @if($expandedLogos->isNotEmpty())
@@ -193,10 +198,10 @@
     }
 
     .partner-logo-card {
-        flex: 0 0 280px;
-        width: 280px;
-        height: 105px;
-        padding: 14px 28px;
+        flex: 0 0 {{ $cardWidth }}px !important;
+        width: {{ $cardWidth }}px !important;
+        height: {{ $cardHeight }}px !important;
+        padding: 10px 22px !important;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -217,11 +222,11 @@
     }
 
     .partner-strip-img {
-        max-height: 76px;
-        max-width: 225px;
-        width: auto;
-        height: auto;
-        object-fit: contain;
+        height: {{ $stripLogoHeight }}px !important;
+        max-height: {{ $stripLogoHeight }}px !important;
+        max-width: {{ $imgMaxWidth }}px !important;
+        width: auto !important;
+        object-fit: contain !important;
         transition: transform 0.3s ease;
         filter: contrast(1.02);
     }
@@ -263,15 +268,18 @@
             gap: 12px;
         }
         .partner-logo-card {
-            flex: 0 0 180px;
-            width: 180px;
-            height: 75px;
-            padding: 10px 16px;
+            flex: 0 0 {{ max(190, (int)($cardWidth * 0.72)) }}px !important;
+            width: {{ max(190, (int)($cardWidth * 0.72)) }}px !important;
+            height: {{ max(80, (int)($cardHeight * 0.75)) }}px !important;
+            padding: 8px 14px !important;
             border-radius: 10px;
         }
         .partner-strip-img {
-            max-height: 52px;
-            max-width: 145px;
+            height: {{ max(50, (int)($stripLogoHeight * 0.72)) }}px !important;
+            max-height: {{ max(50, (int)($stripLogoHeight * 0.72)) }}px !important;
+            max-width: {{ max(150, (int)($imgMaxWidth * 0.72)) }}px !important;
+            width: auto !important;
+            object-fit: contain !important;
         }
         .partner-logo-fallback {
             font-size: 0.75rem;

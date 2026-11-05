@@ -19,6 +19,99 @@
         </div>
     @endif
 
+    @php
+        $currentLogoHeight = (int)(\App\Models\SiteSetting::where('key', 'partner_strip_logo_height')->value('value') ?? 95);
+    @endphp
+
+    <style>
+        .logo-size-range-track {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 9px;
+            border-radius: 999px;
+            background: linear-gradient(to right, #0284c7 0%, #0284c7 var(--progress, 40%), #64748b var(--progress, 40%), #64748b 100%);
+            outline: none;
+            cursor: pointer;
+            transition: background 0.05s ease;
+        }
+        .logo-size-range-track::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #0284c7;
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+        .logo-size-range-track::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+        .logo-size-range-track::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #0284c7;
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+    </style>
+
+    <!-- Logo Size Controller Card with Slider (Image 2) -->
+    <div class="card" style="background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 22px 28px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+        <form action="{{ route('admin.settings.update') }}" method="POST" style="margin: 0;">
+            @csrf
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;">
+                <div style="min-width: 220px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 1.15rem; font-weight: 800; color: #0a192f; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-sliders" style="color: #0284c7;"></i> Adjust Logo Size
+                    </h3>
+                    <p style="margin: 0; color: #64748b; font-size: 0.88rem;">Slide to increase or decrease the logo size across the website.</p>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 16px; flex: 1; max-width: 620px; justify-content: flex-end; flex-wrap: wrap;">
+                    <!-- Range Slider as in Image 2 -->
+                    <div style="flex: 1; min-width: 220px; max-width: 360px; display: flex; flex-direction: column; gap: 6px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: #64748b;">
+                            <span>Smaller (50px)</span>
+                            <span>Larger (160px)</span>
+                        </div>
+                        <input type="range" 
+                               id="logoSizeSlider" 
+                               min="50" 
+                               max="160" 
+                               step="2" 
+                               value="{{ $currentLogoHeight }}" 
+                               class="logo-size-range-track"
+                               oninput="syncLogoSlider(this.value)">
+                    </div>
+
+                    <!-- Number Badge -->
+                    <div style="display: flex; align-items: center; gap: 4px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 6px 12px;">
+                        <input type="number" 
+                               name="partner_strip_logo_height" 
+                               id="logoHeightInput" 
+                               min="50" 
+                               max="180" 
+                               value="{{ $currentLogoHeight }}" 
+                               style="width: 55px; border: none; background: transparent; font-weight: 800; text-align: center; font-size: 1.05rem; color: #0284c7; outline: none;"
+                               oninput="syncLogoInput(this.value)">
+                        <span style="font-weight: 700; color: #64748b; font-size: 0.85rem;">px</span>
+                    </div>
+
+                    <span id="saveStatusBadge" style="font-size: 0.82rem; font-weight: 700; color: #16a34a; min-width: 80px;"></span>
+                    <button type="submit" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; border: none; padding: 11px 22px; border-radius: 10px; font-weight: 700; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); transition: all 0.2s ease;">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Size
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <div class="card" style="padding: 0; overflow: hidden;">
         <div style="padding: 20px 25px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; display: flex; justify-content: space-between; align-items: center;">
             <span style="font-weight: 700; color: #1e293b; font-size: 1.05rem;"><i class="fa-solid fa-grip-vertical" style="color: #00a896; margin-right: 8px;"></i> Active Partner Logos ({{ $logos->count() }})</span>
@@ -93,7 +186,7 @@
                     <input type="file" name="logo" id="logoFile" accept="image/*" style="width: 100%; padding: 10px; border: 1px dashed #00a896; border-radius: 10px; background: #f0fdf4;">
                     <div id="currentLogoPreview" style="margin-top: 10px; display: none;">
                         <span style="font-size: 0.8rem; color: #64748b;">Current Preview:</span><br>
-                        <img id="previewImg" src="" style="max-height: 60px; max-width: 120px; margin-top: 5px; border-radius: 6px; border: 1px solid #e2e8f0; padding: 4px;">
+                        <img id="previewImg" src="" style="max-height: 90px; max-width: 170px; margin-top: 5px; border-radius: 8px; border: 1px solid #cbd5e1; padding: 6px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); object-fit: contain;">
                     </div>
                 </div>
 
@@ -114,6 +207,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const initialVal = document.getElementById('logoHeightInput')?.value || 95;
+            updateSliderTrack(initialVal);
+
             const el = document.getElementById('sortable-logos-list');
             if (el) {
                 new Sortable(el, {
@@ -165,6 +261,56 @@
 
         function closeLogoModal() {
             document.getElementById('logoModalOverlay').style.display = 'none';
+        }
+
+        let saveTimer = null;
+        function updateSliderTrack(val) {
+            const slider = document.getElementById('logoSizeSlider');
+            if (!slider) return;
+            const min = parseFloat(slider.min) || 50;
+            const max = parseFloat(slider.max) || 160;
+            const pct = Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100));
+            slider.style.setProperty('--progress', pct + '%');
+        }
+
+        function syncLogoSlider(val) {
+            const input = document.getElementById('logoHeightInput');
+            if (input) input.value = val;
+            updateSliderTrack(val);
+
+            // Auto-save via AJAX to directly reflect on the website partner ticker (Image 2)
+            const badge = document.getElementById('saveStatusBadge');
+            if (badge) {
+                badge.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+                badge.style.color = '#0284c7';
+            }
+
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(function () {
+                const formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('partner_strip_logo_height', val);
+
+                fetch("{{ route('admin.settings.update') }}", {
+                    method: "POST",
+                    body: formData
+                }).then(() => {
+                    if (badge) {
+                        badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Saved!';
+                        badge.style.color = '#16a34a';
+                        setTimeout(() => { badge.innerHTML = ''; }, 2500);
+                    }
+                }).catch(() => {
+                    if (badge) { badge.innerHTML = ''; }
+                });
+            }, 300);
+        }
+
+        function syncLogoInput(val) {
+            const slider = document.getElementById('logoSizeSlider');
+            if (slider) slider.value = val;
+            updateSliderTrack(val);
+            syncLogoSlider(val);
         }
     </script>
 @endsection

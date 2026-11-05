@@ -312,6 +312,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::put('/addons/{id}', [AdminController::class, 'updateAddon'])->name('admin.addons.update');
     Route::delete('/addons/{id}', [AdminController::class, 'deleteAddon'])->name('admin.addons.delete');
 
+    // CMS: Policies
+    Route::get('/policies', [AdminController::class, 'policies'])->name('admin.policies');
+    Route::post('/policies', [AdminController::class, 'storePolicy'])->name('admin.policies.store');
+    Route::put('/policies/{id}', [AdminController::class, 'updatePolicy'])->name('admin.policies.update');
+    Route::delete('/policies/{id}', [AdminController::class, 'deletePolicy'])->name('admin.policies.delete');
+
 
     // Partner & Accreditation Logos CMS
     Route::get('/partner-logos', [AdminController::class, 'partnerLogosSettings'])->name('admin.partner_logos');
