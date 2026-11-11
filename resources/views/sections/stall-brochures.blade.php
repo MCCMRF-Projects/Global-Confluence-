@@ -1,6 +1,6 @@
 <!-- Conference Brochures & Partnership Section (Compact Cards) -->
 <section id="conference-brochures" style="padding: 40px 0 55px; background: #ffffff; position: relative; font-family: 'Poppins', sans-serif;">
-    <div class="container" style="max-width: 1100px; margin: 0 auto; padding: 0 20px;">
+    <div class="container" style="max-width: 1240px; margin: 0 auto; padding: 0 20px;">
 
         @php
             $stallSettings = [];
@@ -10,22 +10,40 @@
                 $stallSettings = [];
             }
 
+            $allOfficialBrochures = [
+                [
+                    'title' => 'Partnership Avenues for Analytical Service Providers',
+                    'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.jpg')) ? 'images/stall_booking/stall_brochure_1.jpg' : 'images/stall_booking/stall_brochure_1.png',
+                    'tag' => 'Analytical Services'
+                ],
+                [
+                    'title' => 'Partnership Avenues for Hospitals & Health Sectors',
+                    'image' => 'images/stall_booking/stall_brochure_3.png',
+                    'tag' => 'Hospitals & Health'
+                ],
+                [
+                    'title' => 'Tariff Details & Sponsorship Opportunities',
+                    'image' => 'images/stall_booking/stall_brochure_4.png',
+                    'tag' => 'Tariff & Contact'
+                ],
+                [
+                    'title' => 'Sponsorship Matrix & Stall Packages',
+                    'image' => 'images/stall_booking/stall_brochure_2.png',
+                    'tag' => 'Sponsorship Matrix'
+                ],
+            ];
+
             $homeBrochures = [];
             if (!empty($stallSettings['stall_brochures_json'])) {
-                $homeBrochures = json_decode($stallSettings['stall_brochures_json'], true) ?: [];
+                $decoded = json_decode($stallSettings['stall_brochures_json'], true) ?: [];
+                $homeBrochures = array_values(array_filter($decoded, function($b) {
+                    return !empty($b['image']) && !empty($b['title']) && trim($b['title']) !== 'aaaaaaaa';
+                }));
             }
 
-            if (empty($homeBrochures)) {
-                $homeBrochures = [
-                    [
-                        'title' => 'Partnership Avenues for Analytical Service Providers',
-                        'image' => 'images/stall_booking/stall_brochure_1.jpg'
-                    ],
-                    [
-                        'title' => 'Tariff Details & Sponsorship Opportunities',
-                        'image' => 'images/stall_booking/stall_brochure_2.png'
-                    ],
-                ];
+            // Ensure all official brochures from Stall Booking page are available
+            if (count($homeBrochures) < 3) {
+                $homeBrochures = $allOfficialBrochures;
             }
 
             $stallPageUrl = url('/page/stall-booking-and-merchandise');
@@ -48,18 +66,18 @@
         <style>
             .brochure-small-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(280px, 340px));
-                gap: 24px;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 22px;
                 justify-content: center;
-                margin-bottom: 25px;
+                margin-bottom: 28px;
             }
 
             .brochure-small-card {
                 background: #ffffff;
                 border-radius: 16px;
                 border: 1.5px solid #e2e8f0;
-                box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
-                padding: 16px;
+                box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+                padding: 14px;
                 display: flex;
                 flex-direction: column;
                 text-decoration: none !important;
@@ -78,7 +96,7 @@
 
             .brochure-thumb-wrap {
                 width: 100%;
-                height: 290px;
+                height: 265px;
                 border-radius: 12px;
                 overflow: hidden;
                 background: #f8fafc;
@@ -101,19 +119,19 @@
             }
 
             .brochure-small-card:hover .brochure-thumb-img {
-                transform: scale(1.04);
+                transform: scale(1.05);
             }
 
             .brochure-hover-overlay {
                 position: absolute;
                 inset: 0;
-                background: linear-gradient(180deg, rgba(15, 23, 42, 0.05) 0%, rgba(15, 23, 42, 0.75) 100%);
+                background: linear-gradient(180deg, rgba(15, 23, 42, 0.02) 0%, rgba(15, 23, 42, 0.72) 100%);
                 opacity: 0;
                 transition: opacity 0.3s ease;
                 display: flex;
                 align-items: flex-end;
                 justify-content: center;
-                padding-bottom: 16px;
+                padding-bottom: 14px;
             }
 
             .brochure-small-card:hover .brochure-hover-overlay {
@@ -123,9 +141,9 @@
             .brochure-hover-badge {
                 background: #00A896;
                 color: #ffffff;
-                font-size: 0.82rem;
+                font-size: 0.8rem;
                 font-weight: 700;
-                padding: 7px 16px;
+                padding: 6px 15px;
                 border-radius: 20px;
                 display: inline-flex;
                 align-items: center;
@@ -141,12 +159,17 @@
             }
 
             .brochure-card-title {
-                font-size: 1.02rem;
+                font-size: 0.95rem;
                 font-weight: 700;
                 color: #0f172a;
                 margin: 0 0 10px 0;
                 line-height: 1.45;
                 transition: color 0.2s;
+                min-height: 44px;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
             }
 
             .brochure-small-card:hover .brochure-card-title {
@@ -165,28 +188,29 @@
             .brochure-action-link {
                 color: #00A896;
                 font-weight: 700;
-                font-size: 0.88rem;
+                font-size: 0.84rem;
                 display: inline-flex;
                 align-items: center;
-                gap: 6px;
+                gap: 5px;
             }
 
             .brochure-tag-badge {
                 background: #e6f7f5;
                 color: #009688;
-                font-size: 0.74rem;
+                font-size: 0.72rem;
                 font-weight: 700;
-                padding: 4px 10px;
+                padding: 3px 9px;
                 border-radius: 20px;
             }
         </style>
 
-        <!-- Small Size Cards Grid (Each clicks directly to /page/stall-booking-and-merchandise) -->
+        <!-- Small Size Cards Grid (All brochures linking directly to /page/stall-booking-and-merchandise) -->
         <div class="brochure-small-grid">
             @foreach($homeBrochures as $index => $brochure)
                 @php
                     $imgSrc = asset($brochure['image'] ?? 'images/stall_booking/stall_brochure_1.jpg');
                     $bTitle = $brochure['title'] ?? 'Brochure ' . ($index + 1);
+                    $tag = $brochure['tag'] ?? 'Brochure #' . ($index + 1);
                 @endphp
                 <a href="{{ $stallPageUrl }}" class="brochure-small-card" title="Click to view complete details on Stall Booking & Merchandise page">
                     <div class="brochure-thumb-wrap">
@@ -204,7 +228,7 @@
                                 View Details &amp; Booking <i class="fa-solid fa-arrow-right"></i>
                             </span>
                             <span class="brochure-tag-badge">
-                                Brochure #{{ $index + 1 }}
+                                {{ $tag }}
                             </span>
                         </div>
                     </div>
@@ -214,7 +238,7 @@
 
         <!-- Section Bottom Button -->
         <div style="text-align: center; margin-top: 15px;">
-            <a href="{{ $stallPageUrl }}" style="background: linear-gradient(135deg, #00A896, #028090); color: #ffffff; padding: 12px 30px; border-radius: 30px; font-weight: 700; text-decoration: none; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0, 168, 150, 0.28); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+            <a href="{{ $stallPageUrl }}" style="background: linear-gradient(135deg, #00A896, #028090); color: #ffffff; padding: 12px 32px; border-radius: 30px; font-weight: 700; text-decoration: none; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0, 168, 150, 0.28); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
                 <i class="fa-solid fa-store"></i> Explore All Stall Booking &amp; Merchandise Details &rarr;
             </a>
         </div>
