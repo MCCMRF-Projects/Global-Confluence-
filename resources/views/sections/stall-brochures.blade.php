@@ -1,4 +1,4 @@
-<!-- Conference Brochures Section (3 Pure Image Cards) -->
+<!-- Conference Brochures Section (3 Pure Image Cards - Flat Clean Design) -->
 <section id="conference-brochures" style="padding: 40px 0 55px; background: #ffffff; position: relative; font-family: 'Poppins', sans-serif;">
     <div class="container" style="max-width: 1220px; margin: 0 auto; padding: 0 20px;">
 
@@ -60,22 +60,22 @@
             .brochure-img-card {
                 background: #ffffff;
                 border-radius: 14px;
-                border: 1px solid #e2e8f0;
-                box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+                border: 1.5px solid #e2e8f0;
+                box-shadow: none !important;
                 padding: 12px;
                 display: flex;
                 flex-direction: column;
                 text-decoration: none !important;
                 color: inherit;
-                transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+                transition: transform 0.25s ease, border-color 0.25s ease;
                 overflow: hidden;
                 cursor: pointer;
             }
 
             .brochure-img-card:hover {
-                transform: translateY(-5px);
+                transform: translateY(-4px);
                 border-color: #00A896;
-                box-shadow: 0 12px 25px rgba(15, 23, 42, 0.08);
+                box-shadow: none !important;
             }
 
             .brochure-img-frame {
@@ -89,6 +89,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                box-shadow: none !important;
             }
 
             .brochure-main-img {
@@ -103,36 +104,7 @@
             }
 
             .brochure-img-card:hover .brochure-main-img {
-                transform: scale(1.03);
-            }
-
-            .brochure-overlay {
-                position: absolute;
-                inset: 0;
-                background: linear-gradient(180deg, rgba(15, 23, 42, 0.02) 0%, rgba(15, 23, 42, 0.72) 100%);
-                opacity: 0;
-                transition: opacity 0.25s ease;
-                display: flex;
-                align-items: flex-end;
-                justify-content: center;
-                padding-bottom: 16px;
-            }
-
-            .brochure-img-card:hover .brochure-overlay {
-                opacity: 1;
-            }
-
-            .brochure-click-pill {
-                background: #00A896;
-                color: #ffffff;
-                font-size: 0.82rem;
-                font-weight: 700;
-                padding: 7px 16px;
-                border-radius: 20px;
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+                transform: scale(1.02);
             }
 
             .brochure-title-bar {
@@ -148,9 +120,7 @@
             }
 
             .brochure-title-bar span {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                line-height: 1.4;
             }
 
             .brochure-title-bar i {
@@ -168,7 +138,7 @@
             }
         </style>
 
-        <!-- 3 Pure Image Brochure Cards (Linking directly to /page/stall-booking-and-merchandise) -->
+        <!-- 3 Pure Image Brochure Cards (Clean Flat Design, Zero Shadow, Zero Dark Overlay) -->
         <div class="brochure-trio-grid">
             @foreach($threeBrochures as $index => $b)
                 @php
@@ -178,11 +148,6 @@
                 <a href="{{ $stallPageUrl }}" class="brochure-img-card" title="Click to view {{ $bTitle }}">
                     <div class="brochure-img-frame">
                         <img src="{{ $imgSrc }}" alt="{{ $bTitle }}" class="brochure-main-img" loading="lazy">
-                        <div class="brochure-overlay">
-                            <span class="brochure-click-pill">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Full Brochure
-                            </span>
-                        </div>
                     </div>
                     <div class="brochure-title-bar">
                         <span>{{ $bTitle }}</span>
@@ -194,7 +159,7 @@
 
         <!-- Section Bottom Button -->
         <div style="text-align: center; margin-top: 10px;">
-            <a href="{{ $stallPageUrl }}" style="background: linear-gradient(135deg, #00A896, #028090); color: #ffffff; padding: 12px 32px; border-radius: 30px; font-weight: 700; text-decoration: none; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0, 168, 150, 0.28); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+            <a href="{{ $stallPageUrl }}" style="background: linear-gradient(135deg, #00A896, #028090); color: #ffffff; padding: 12px 32px; border-radius: 30px; font-weight: 700; text-decoration: none; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 8px; border: none; box-shadow: none; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
                 <i class="fa-solid fa-store"></i> Explore Full Stall Booking &amp; Merchandise Details &rarr;
             </a>
         </div>
