@@ -76,34 +76,6 @@
         box-shadow: 0 18px 45px rgba(0, 168, 150, 0.12);
     }
 
-    .details-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 18px;
-        padding-bottom: 14px;
-        border-bottom: 1.5px solid #f1f5f9;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .details-card-title {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: #0f172a;
-        margin: 0;
-    }
-
-    .details-card-badge {
-        background: #e6f7f5;
-        color: #00A896;
-        padding: 4px 14px;
-        border-radius: 20px;
-        font-weight: 700;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-    }
 
     .details-brochure-img {
         width: 100%;
@@ -201,11 +173,6 @@
                 $bTitle = $brochure['title'] ?? 'Brochure ' . ($index + 1);
             @endphp
             <div class="details-brochure-card">
-                <div class="details-card-header">
-                    <h3 class="details-card-title">{{ $bTitle }}</h3>
-                    <span class="details-card-badge">Brochure {{ $index + 1 }} of {{ count($homeBrochures) }}</span>
-                </div>
-
                 <!-- High Quality Brochure Image -->
                 <img src="{{ $imgSrc }}" alt="{{ $bTitle }}" class="details-brochure-img" loading="lazy" onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" title="Click to open Full Resolution Zoom">
 
