@@ -1,6 +1,14 @@
 <!-- Conference Brochures Section (100% Pure Image Cards - No Text) -->
-<section id="conference-brochures" style="padding: 15px 0 45px; background: #ffffff; position: relative; font-family: 'Poppins', sans-serif;">
+<section id="conference-brochures" style="padding: 35px 0 55px; background: #ffffff; position: relative; font-family: 'Poppins', sans-serif;">
     <div class="container" style="max-width: 1220px; margin: 0 auto; padding: 0 20px;">
+
+        <!-- Section Header (Only Heading) -->
+        <div style="text-align: center; margin-bottom: 35px;">
+            <h2 style="font-size: clamp(2rem, 3.8vw, 2.7rem); font-weight: 800; color: #0f172a; margin: 0 0 12px 0; letter-spacing: -0.5px;">
+                Conference <span style="color: #009688;">Brochures</span>
+            </h2>
+            <div style="width: 65px; height: 3.5px; background: linear-gradient(90deg, #009688, #84cc16); margin: 0 auto; border-radius: 4px;"></div>
+        </div>
 
         @php
             $stallPageUrl = url('/page/stall-booking-and-merchandise');
