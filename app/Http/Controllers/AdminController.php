@@ -2152,7 +2152,7 @@ class AdminController extends Controller
         foreach ($bTitles as $idx => $title) {
             if (empty(trim($title))) continue;
 
-            $imgPath = $bExistingImages[$idx] ?? 'images/stall_booking/stall_brochure_1.jpg';
+            $imgPath = $bExistingImages[$idx] ?? 'images/stall_booking/stall_brochure_1.png';
             if (isset($bUploadedFiles[$idx]) && $bUploadedFiles[$idx]->isValid()) {
                 $imgPath = $this->safeUploadImage($bUploadedFiles[$idx], 'images/stall_booking');
             }

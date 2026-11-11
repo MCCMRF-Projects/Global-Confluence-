@@ -12,11 +12,11 @@
 
             $stallPageUrl = url('/page/stall-booking-and-merchandise');
 
-            // The 3 official conference brochures
+            // The 3 official conference brochures (Master High-Resolution)
             $threeBrochures = [
                 [
                     'title' => 'Partnership Avenues for Analytical Service Providers',
-                    'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.jpg')) ? 'images/stall_booking/stall_brochure_1.jpg' : 'images/stall_booking/stall_brochure_1.png',
+                    'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.png')) ? 'images/stall_booking/stall_brochure_1.png' : 'images/stall_booking/stall_brochure_1.jpg',
                 ],
                 [
                     'title' => 'Partnership Avenues for Hospitals & Health Sectors',
@@ -80,10 +80,9 @@
 
             .brochure-img-frame {
                 width: 100%;
-                height: 420px;
                 border-radius: 10px;
                 overflow: hidden;
-                background: #f8fafc;
+                background: #ffffff;
                 border: 1px solid #e2e8f0;
                 position: relative;
                 display: flex;
@@ -94,9 +93,8 @@
 
             .brochure-main-img {
                 width: 100%;
-                height: 100%;
-                object-fit: cover;
-                object-position: top center;
+                height: auto;
+                object-fit: contain;
                 image-rendering: -webkit-optimize-contrast;
                 image-rendering: high-quality;
                 transition: transform 0.35s ease;

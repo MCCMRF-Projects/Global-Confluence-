@@ -11,7 +11,7 @@
     
     // Default brochures if none configured
     $brochureList = !empty($brochures) ? $brochures : [
-        ['title' => 'Partnership Avenues for Analytical Service Providers', 'image' => 'images/stall_booking/stall_brochure_1.jpg'],
+        ['title' => 'Partnership Avenues for Analytical Service Providers', 'image' => 'images/stall_booking/stall_brochure_1.png'],
         ['title' => 'Tariff Details & Sponsorship Opportunities (Matrix)', 'image' => 'images/stall_booking/stall_brochure_2.png'],
         ['title' => 'Partnership Avenues for Hospitals & Health Sectors', 'image' => 'images/stall_booking/stall_brochure_3.png'],
         ['title' => 'Tariff Details & Sponsorship Opportunities (Contact & Notes)', 'image' => 'images/stall_booking/stall_brochure_4.png'],
@@ -142,7 +142,11 @@
     <!-- Dynamic Brochures List -->
     @foreach($brochureList as $index => $brochure)
         @php
-            $imgSrc = asset($brochure['image'] ?? 'images/stall_booking/stall_brochure_1.jpg');
+            $rawImg = $brochure['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+            if ($rawImg === 'images/stall_booking/stall_brochure_1.jpg' && file_exists(public_path('images/stall_booking/stall_brochure_1.png'))) {
+                $rawImg = 'images/stall_booking/stall_brochure_1.png';
+            }
+            $imgSrc = asset($rawImg);
             $bTitle = $brochure['title'] ?? 'Brochure ' . ($index + 1);
         @endphp
         <div class="brochure-card">

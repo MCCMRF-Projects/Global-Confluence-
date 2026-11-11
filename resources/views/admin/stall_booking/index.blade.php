@@ -97,7 +97,7 @@
     $bannerSubtitle = $settings['stall_banner_subtitle'] ?? 'Partnership Avenues, Tariff Details & Sponsorship Opportunities | Global One Health Confluence 2026';
     
     $brochureList = !empty($brochures) ? $brochures : [
-        ['title' => 'Partnership Avenues for Analytical Service Providers', 'image' => 'images/stall_booking/stall_brochure_1.jpg'],
+        ['title' => 'Partnership Avenues for Analytical Service Providers', 'image' => 'images/stall_booking/stall_brochure_1.png'],
         ['title' => 'Tariff Details & Sponsorship Opportunities (Matrix)', 'image' => 'images/stall_booking/stall_brochure_2.png'],
         ['title' => 'Partnership Avenues for Hospitals & Health Sectors', 'image' => 'images/stall_booking/stall_brochure_3.png'],
         ['title' => 'Tariff Details & Sponsorship Opportunities (Contact & Notes)', 'image' => 'images/stall_booking/stall_brochure_4.png'],
@@ -422,8 +422,8 @@
                 <div>
                     <label class="form-label">Instant HD Preview</label>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <img id="${newImgId}" src="{{ asset('images/stall_booking/stall_brochure_1.jpg') }}" alt="Preview" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
-                        <input type="hidden" name="brochure_existing_images[]" value="images/stall_booking/stall_brochure_1.jpg">
+                        <img id="${newImgId}" src="{{ asset('images/stall_booking/stall_brochure_1.png') }}" alt="Preview" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
+                        <input type="hidden" name="brochure_existing_images[]" value="images/stall_booking/stall_brochure_1.png">
                     </div>
                 </div>
                 <div>
