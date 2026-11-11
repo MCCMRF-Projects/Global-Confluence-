@@ -2011,14 +2011,7 @@ class AdminController extends Controller
 
         $logoPath = '';
         if ($request->hasFile('logo')) {
-            $file = $request->file('logo');
-            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
-            $destination = public_path('images');
-            if (!file_exists($destination)) {
-                @mkdir($destination, 0777, true);
-            }
-            $file->move($destination, $filename);
-            $logoPath = 'images/' . $filename;
+            $logoPath = $this->safeUploadImage($request->file('logo'), 'images');
         }
 
         $maxSort = \App\Models\PartnerLogo::max('sort_order') ?? 0;
@@ -2051,14 +2044,7 @@ class AdminController extends Controller
         ];
 
         if ($request->hasFile('logo')) {
-            $file = $request->file('logo');
-            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
-            $destination = public_path('images');
-            if (!file_exists($destination)) {
-                @mkdir($destination, 0777, true);
-            }
-            $file->move($destination, $filename);
-            $data['logo_path'] = 'images/' . $filename;
+            $data['logo_path'] = $this->safeUploadImage($request->file('logo'), 'images');
         }
 
         $logo->update($data);
@@ -2080,6 +2066,41 @@ class AdminController extends Controller
             \App\Models\PartnerLogo::where('id', $id)->update(['sort_order' => $index + 1]);
         }
         return response()->json(['status' => 'success']);
+    }
+
+    private function safeUploadImage($file, $subfolder = 'images')
+    {
+        $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
+        $cleanSub = trim($subfolder, '/');
+        $primaryDir = public_path($cleanSub);
+
+        if (!file_exists($primaryDir)) {
+            @mkdir($primaryDir, 0777, true);
+        }
+        @chmod($primaryDir, 0777);
+
+        if (is_writable($primaryDir)) {
+            try {
+                $file->move($primaryDir, $filename);
+                @chmod($primaryDir . '/' . $filename, 0666);
+                return $cleanSub . '/' . $filename;
+            } catch (\Throwable $e) {
+                // proceed to fallback
+            }
+        }
+
+        // Fallback: storage/app/public
+        $storageDir = storage_path('app/public/' . $cleanSub);
+        if (!file_exists($storageDir)) {
+            @mkdir($storageDir, 0777, true);
+        }
+        @chmod($storageDir, 0777);
+
+        $file->move($storageDir, $filename);
+        @chmod($storageDir . '/' . $filename, 0666);
+        @copy($storageDir . '/' . $filename, $primaryDir . '/' . $filename);
+
+        return $cleanSub . '/' . $filename;
     }
 
     public function stallBookingSettings()
@@ -2121,10 +2142,7 @@ class AdminController extends Controller
 
             $imgPath = $bExistingImages[$idx] ?? 'images/stall_booking/stall_brochure_1.jpg';
             if (isset($bUploadedFiles[$idx]) && $bUploadedFiles[$idx]->isValid()) {
-                $file = $bUploadedFiles[$idx];
-                $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
-                $file->move(public_path('images/stall_booking'), $filename);
-                $imgPath = 'images/stall_booking/' . $filename;
+                $imgPath = $this->safeUploadImage($bUploadedFiles[$idx], 'images/stall_booking');
             }
 
             $brochures[] = [
@@ -2137,11 +2155,10 @@ class AdminController extends Controller
         if ($request->filled('new_brochure_title') && $request->hasFile('new_brochure_file')) {
             $file = $request->file('new_brochure_file');
             if ($file->isValid()) {
-                $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
-                $file->move(public_path('images/stall_booking'), $filename);
+                $imgPath = $this->safeUploadImage($file, 'images/stall_booking');
                 $brochures[] = [
                     'title' => trim($request->input('new_brochure_title')),
-                    'image' => 'images/stall_booking/' . $filename
+                    'image' => $imgPath
                 ];
             }
         }
@@ -2163,10 +2180,7 @@ class AdminController extends Controller
 
             $logoPath = $sExistingLogos[$idx] ?? 'images/sponsors/anderson_logo.svg';
             if (isset($sUploadedFiles[$idx]) && $sUploadedFiles[$idx]->isValid()) {
-                $file = $sUploadedFiles[$idx];
-                $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
-                $file->move(public_path('images/sponsors'), $filename);
-                $logoPath = 'images/sponsors/' . $filename;
+                $logoPath = $this->safeUploadImage($sUploadedFiles[$idx], 'images/sponsors');
             }
 
             $sponsors[] = [
@@ -2180,12 +2194,11 @@ class AdminController extends Controller
         if ($request->filled('new_sponsor_name') && $request->hasFile('new_sponsor_file')) {
             $file = $request->file('new_sponsor_file');
             if ($file->isValid()) {
-                $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
-                $file->move(public_path('images/sponsors'), $filename);
+                $logoPath = $this->safeUploadImage($file, 'images/sponsors');
                 $sponsors[] = [
                     'name' => trim($request->input('new_sponsor_name')),
                     'link' => trim($request->input('new_sponsor_link', '#')),
-                    'logo' => 'images/sponsors/' . $filename
+                    'logo' => $logoPath
                 ];
             }
         }

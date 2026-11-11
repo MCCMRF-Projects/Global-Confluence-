@@ -58,6 +58,33 @@ Route::get('/storage-file/{path}', function ($path) {
     ]);
 })->where('path', '.*')->name('storage.file');
 
+Route::get('/images/{path}', function ($path) {
+    $cleanPath = ltrim($path, '/');
+    $candidates = [
+        public_path('images/' . $cleanPath),
+        storage_path('app/public/images/' . $cleanPath),
+        storage_path('app/public/' . $cleanPath),
+        storage_path('app/' . $cleanPath),
+    ];
+    foreach ($candidates as $cand) {
+        if (!empty($cand) && file_exists($cand) && !is_dir($cand)) {
+            $extension = strtolower(pathinfo($cand, PATHINFO_EXTENSION));
+            $mimeTypes = [
+                'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png',
+                'gif' => 'image/gif', 'webp' => 'image/webp', 'svg' => 'image/svg+xml',
+                'pdf' => 'application/pdf',
+            ];
+            $mimeType = $mimeTypes[$extension] ?? (\Illuminate\Support\Facades\File::mimeType($cand) ?: 'application/octet-stream');
+            return response()->file($cand, [
+                'Content-Type' => $mimeType,
+                'Content-Disposition' => 'inline; filename="' . basename($cand) . '"',
+                'Cache-Control' => 'public, max-age=86400',
+            ]);
+        }
+    }
+    abort(404);
+})->where('path', '.*');
+
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 Route::get('/page/{slug}', [FrontendController::class, 'customPage'])->name('custom.page');
 
@@ -631,6 +658,30 @@ Route::get('/git-pull', function () {
         
         $seeder = new \Database\Seeders\PartnerLogoSeeder();
         $seeder->run();
+
+        // Ensure all media upload directories exist and are writable
+        $uploadDirs = [
+            public_path('images'),
+            public_path('images/stall_booking'),
+            public_path('images/sponsors'),
+            public_path('images/settings'),
+            public_path('images/speakers'),
+            public_path('images/venue'),
+            public_path('images/event'),
+            storage_path('app/public'),
+            storage_path('app/public/images'),
+            storage_path('app/public/images/stall_booking'),
+            storage_path('app/public/images/sponsors'),
+            storage_path('framework/views'),
+            storage_path('framework/cache'),
+            storage_path('framework/sessions'),
+        ];
+        foreach ($uploadDirs as $dir) {
+            if (!file_exists($dir)) {
+                @mkdir($dir, 0777, true);
+            }
+            @chmod($dir, 0777);
+        }
 
         return "<div style='font-family: sans-serif; padding: 30px; max-width: 650px; margin: 30px auto; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px;'>
             <h2 style='color: #166534;'>Git Pull & Live Update</h2>
