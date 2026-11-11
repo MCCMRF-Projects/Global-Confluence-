@@ -28,6 +28,11 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: high-quality;
+        }
+
         body {
             background-color: var(--admin-bg);
             color: var(--admin-text);

@@ -1963,11 +1963,19 @@ class AdminController extends Controller
 
     public function updateHackathonSettings(Request $request)
     {
-        $settings = $request->except(['_token', 'hackathon_guideline_items']);
+        $settings = $request->except(['_token', 'hackathon_guideline_items', 'hackathon_flyer_image']);
         foreach ($settings as $key => $value) {
             \App\Models\SiteSetting::updateOrCreate(
                 ['key' => $key],
                 ['value' => is_array($value) ? json_encode($value) : $value, 'group' => 'hackathon']
+            );
+        }
+
+        if ($request->hasFile('hackathon_flyer_image')) {
+            $flyerPath = $this->safeUploadImage($request->file('hackathon_flyer_image'), 'images/event');
+            \App\Models\SiteSetting::updateOrCreate(
+                ['key' => 'hackathon_flyer_image'],
+                ['value' => $flyerPath, 'group' => 'hackathon']
             );
         }
 

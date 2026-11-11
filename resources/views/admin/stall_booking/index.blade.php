@@ -160,10 +160,12 @@
             <!-- Brochures Mini Preview -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px;">
                 @foreach($brochureList as $idx => $b)
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-align: center;">
-                        <img src="{{ asset($b['image']) }}" alt="{{ $b['title'] }}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; margin-bottom: 8px;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-align: center;">
+                        <a href="{{ asset($b['image']) }}" target="_blank" title="Click to view full resolution HD image" style="display: block; text-decoration: none;">
+                            <img src="{{ asset($b['image']) }}" alt="{{ $b['title'] }}" style="width: 100%; max-height: 200px; object-fit: contain; background: #f8fafc; border-radius: 6px; margin-bottom: 8px; image-rendering: -webkit-optimize-contrast; border: 1px solid #e2e8f0; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                        </a>
                         <div style="font-size: 0.8rem; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $b['title'] }}</div>
-                        <div style="font-size: 0.72rem; color: #00A896; margin-top: 4px; font-weight: 600;">Brochure #{{ $idx + 1 }}</div>
+                        <div style="font-size: 0.72rem; color: #00A896; margin-top: 4px; font-weight: 600;">Brochure #{{ $idx + 1 }} &bull; <a href="{{ asset($b['image']) }}" target="_blank" style="color: #0284c7; text-decoration: underline;">Full HD ↗</a></div>
                     </div>
                 @endforeach
             </div>
@@ -246,16 +248,24 @@
                             </div>
 
                             <div>
-                                <label class="form-label">Current Preview</label>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <img src="{{ asset($brochure['image']) }}" alt="{{ $brochure['title'] }}" style="height: 50px; width: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                <label class="form-label">Current Preview (HD)</label>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <a href="{{ asset($brochure['image']) }}" target="_blank" title="Click to view full resolution HD image" style="display: inline-block;">
+                                        <img src="{{ asset($brochure['image']) }}" alt="{{ $brochure['title'] }}" id="brochure_preview_img_{{ $index }}" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
+                                    </a>
+                                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                                        <a href="{{ asset($brochure['image']) }}" target="_blank" style="font-size: 0.8rem; font-weight: 700; color: #0284c7; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                                            <i class="fa-solid fa-up-right-from-square"></i> View Full HD
+                                        </a>
+                                        <span style="font-size: 0.72rem; color: #64748b;">(Click to view high-res)</span>
+                                    </div>
                                     <input type="hidden" name="brochure_existing_images[]" value="{{ $brochure['image'] }}">
                                 </div>
                             </div>
 
                             <div>
                                 <label class="form-label">Upload New / Replace Image</label>
-                                <input type="file" name="brochure_files[]" class="form-input" accept="image/*">
+                                <input type="file" name="brochure_files[]" class="form-input" accept="image/*" onchange="previewBrochureLocal(this, 'brochure_preview_img_{{ $index }}')">
                             </div>
                         </div>
                     </div>
@@ -373,9 +383,26 @@
         });
     }
 
+    function previewBrochureLocal(input, targetId) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById(targetId);
+                if (img) {
+                    img.src = e.target.result;
+                    if (img.parentElement && img.parentElement.tagName === 'A') {
+                        img.parentElement.href = e.target.result;
+                    }
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     function addBrochureRow() {
         const container = document.getElementById('brochures-container');
         const count = container.querySelectorAll('.brochure-row').length + 1;
+        const newImgId = 'new_brochure_img_' + Date.now();
         const row = document.createElement('div');
         row.className = 'item-card brochure-row';
         row.innerHTML = `
@@ -393,13 +420,15 @@
                     <input type="text" name="brochure_titles[]" placeholder="e.g. Partnership Avenues Brochure" class="form-input" required>
                 </div>
                 <div>
-                    <label class="form-label">Default Image</label>
-                    <span style="color: #64748b; font-size: 0.85rem;">New Upload</span>
-                    <input type="hidden" name="brochure_existing_images[]" value="images/stall_booking/stall_brochure_1.jpg">
+                    <label class="form-label">Instant HD Preview</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <img id="${newImgId}" src="{{ asset('images/stall_booking/stall_brochure_1.jpg') }}" alt="Preview" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
+                        <input type="hidden" name="brochure_existing_images[]" value="images/stall_booking/stall_brochure_1.jpg">
+                    </div>
                 </div>
                 <div>
                     <label class="form-label">Upload Brochure Image</label>
-                    <input type="file" name="brochure_files[]" class="form-input" accept="image/*" required>
+                    <input type="file" name="brochure_files[]" class="form-input" accept="image/*" required onchange="previewBrochureLocal(this, '${newImgId}')">
                 </div>
             </div>
         `;

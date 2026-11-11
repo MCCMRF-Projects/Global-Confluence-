@@ -15,6 +15,10 @@
     <!-- Main Style -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}?v={{ time() }}">
     <style>
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: high-quality;
+        }
         .whatsapp-float {
             position: fixed;
             width: 68px;

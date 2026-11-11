@@ -87,6 +87,7 @@
         $bannerTitle = $settings['hackathon_banner_title'] ?? 'HACKATHON';
         $sectionTitle = $settings['hackathon_section_title'] ?? 'One Health Grand Hackathon Challenge';
         $mainContent = $settings['hackathon_main_content'] ?? 'Join multidisciplinary teams of engineers, healthcare professionals, data scientists, and developers to build rapid digital and hardware solutions for One Health surveillance, pandemic preparedness, antimicrobial resistance tracking, and environmental monitoring.';
+        $flyerImage = $settings['hackathon_flyer_image'] ?? (file_exists(public_path('images/event/hackathon_flyer.png')) ? 'images/event/hackathon_flyer.png' : null);
 
         $defaultGuidelines = [
             'Track A - Genomic & AMR Surveillance: AI-powered tools for early pathogen detection, AMR mutation tracking, and outbreak modeling.',
@@ -146,12 +147,23 @@
                         </li>
                     @endforeach
                 </ul>
+
+                @if(!empty($flyerImage))
+                    <div style="margin-top: 30px; padding-top: 25px; border-top: 1px solid #e2e8f0; text-align: center;">
+                        <h4 style="color: #0f172a; font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="fa-solid fa-file-image" style="color: #00A896;"></i> Official Event Flyer & Challenge Guide
+                        </h4>
+                        <div style="display: inline-block; max-width: 420px; width: 100%; border: 1.5px solid #cbd5e1; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.06); background: #ffffff;">
+                            <img src="{{ asset($flyerImage) }}" alt="Hackathon Flyer" style="width: 100%; height: auto; display: block; image-rendering: -webkit-optimize-contrast; image-rendering: high-quality;">
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 
     <!-- 2. EDIT FORM -->
-    <form action="{{ route('admin.hackathon.update') }}" method="POST">
+    <form action="{{ route('admin.hackathon.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div style="display: flex; flex-direction: column; gap: 30px;">
@@ -224,10 +236,57 @@
                         </div>
                     @endforeach
                 </div>
+            </div>
 
-                <div style="text-align: right; margin-top: 25px;">
-                    <button type="submit" class="btn" style="background: linear-gradient(135deg, #00A896, #028090); color: #ffffff; padding: 13px 34px; border-radius: 10px; font-weight: 800; font-size: 1rem; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 168, 150, 0.35); display: inline-flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-floppy-disk"></i> Save Hackathon Content
+            <!-- 4. Official Event Flyer / Poster Upload -->
+            <div class="admin-card-section">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h3 style="margin: 0 0 6px 0; font-size: 1.25rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-file-image" style="color: #00A896;"></i> 4. Official Event Flyer / Poster (High-Resolution)
+                        </h3>
+                        <p style="color: #64748b; font-size: 0.9rem; margin: 0;">Upload high-resolution event poster/flyer (PNG, JPG, WEBP). Preserves full original clarity without blur, with interactive HD zoom for viewers.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
+                    <!-- Current Flyer Display -->
+                    <div style="flex: 1; min-width: 280px;">
+                        <label class="form-label">Current Event Flyer</label>
+                        <div id="flyer_current_box" style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 18px; text-align: center;">
+                            @if(!empty($flyerImage))
+                                <img id="flyer_preview_img" src="{{ asset($flyerImage) }}" alt="Event Flyer" style="max-height: 260px; max-width: 100%; width: auto; height: auto; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); image-rendering: -webkit-optimize-contrast; image-rendering: high-quality; display: inline-block;">
+                                <div id="flyer_preview_action" style="margin-top: 14px; display: flex; justify-content: center; gap: 10px;">
+                                    <a href="{{ asset($flyerImage) }}" target="_blank" style="background: #ffffff; color: #00A896; border: 1.5px solid #00A896; padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                                        <i class="fa-solid fa-arrow-up-right-from-square"></i> View Full Resolution HD
+                                    </a>
+                                </div>
+                            @else
+                                <div id="flyer_preview_placeholder" style="padding: 40px 20px; color: #94a3b8;">
+                                    <i class="fa-solid fa-image" style="font-size: 3rem; margin-bottom: 10px; color: #cbd5e1;"></i>
+                                    <p style="margin: 0; font-size: 0.9rem;">No flyer uploaded yet. Choose an image file below.</p>
+                                </div>
+                                <img id="flyer_preview_img" src="" alt="Event Flyer" style="max-height: 260px; max-width: 100%; width: auto; height: auto; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); image-rendering: -webkit-optimize-contrast; display: none;">
+                                <div id="flyer_preview_action" style="margin-top: 14px; display: none; justify-content: center;">
+                                    <span style="color: #00A896; font-weight: 700; font-size: 0.85rem;"><i class="fa-solid fa-eye"></i> Ready for upload preview</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Upload Controls -->
+                    <div style="flex: 1; min-width: 280px;">
+                        <label class="form-label">Upload New Flyer / Poster</label>
+                        <input type="file" name="hackathon_flyer_image" id="hackathon_flyer_input" accept="image/*" class="form-input" onchange="previewFlyerLocal(this)" style="padding: 11px; background: #ffffff;">
+                        <p style="color: #64748b; font-size: 0.85rem; margin: 10px 0 0 0; line-height: 1.5;">
+                            <i class="fa-solid fa-circle-info" style="color: #00A896;"></i> <strong>Zero-Blur High Fidelity:</strong> Images are stored without downsampling or lossy compression. High contrast CSS optimization ensures razor-sharp text on all displays.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="text-align: right; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                    <button type="submit" class="btn" style="background: linear-gradient(135deg, #00A896, #028090); color: #ffffff; padding: 13px 36px; border-radius: 10px; font-weight: 800; font-size: 1rem; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 168, 150, 0.35); display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Hackathon Content & Poster
                     </button>
                 </div>
             </div>
@@ -251,6 +310,22 @@
         `;
         container.appendChild(div);
         div.querySelector('input').focus();
+    }
+
+    function previewFlyerLocal(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('flyer_preview_img');
+                const placeholder = document.getElementById('flyer_preview_placeholder');
+                const action = document.getElementById('flyer_preview_action');
+                if (placeholder) placeholder.style.display = 'none';
+                img.src = e.target.result;
+                img.style.display = 'inline-block';
+                if (action) action.style.display = 'flex';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 </script>
 @endsection

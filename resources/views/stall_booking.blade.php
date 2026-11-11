@@ -72,6 +72,15 @@
         border-radius: 12px;
         display: block;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: high-quality;
+        cursor: zoom-in;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .brochure-img:hover {
+        transform: scale(1.008);
+        box-shadow: 0 8px 25px rgba(0, 168, 150, 0.15);
     }
 
     .brochure-actions {
@@ -137,11 +146,11 @@
             $bTitle = $brochure['title'] ?? 'Brochure ' . ($index + 1);
         @endphp
         <div class="brochure-card">
-            <img src="{{ $imgSrc }}" alt="{{ $bTitle }}" class="brochure-img" loading="lazy">
+            <img src="{{ $imgSrc }}" alt="{{ $bTitle }}" class="brochure-img" loading="lazy" onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" title="Click to open Full Resolution Zoom">
             <div class="brochure-actions">
-                <a href="{{ $imgSrc }}" target="_blank" class="btn-view-full">
-                    <i class="fa-solid fa-up-right-and-down-left-from-center"></i> View Full Resolution
-                </a>
+                <button type="button" onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" class="btn-view-full" style="cursor: pointer;">
+                    <i class="fa-solid fa-up-right-and-down-left-from-center"></i> View Full Resolution (HD Zoom)
+                </button>
                 <a href="{{ $imgSrc }}" download class="btn-view-full" style="background: #00A896; color: #ffffff; border-color: #00A896;">
                     <i class="fa-solid fa-download"></i> Download
                 </a>
@@ -225,6 +234,81 @@
     </div>
 
 </div>
+
+<!-- Full Resolution HD Lightbox Modal -->
+<div id="hdLightboxModal" style="display: none; position: fixed; inset: 0; background: rgba(10, 25, 47, 0.95); z-index: 99999; backdrop-filter: blur(8px); flex-direction: column; justify-content: space-between; align-items: center; padding: 20px;">
+    <!-- Top Bar -->
+    <div style="width: 100%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; color: #ffffff; padding: 10px 0;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <i class="fa-solid fa-file-image" style="color: #00A896; font-size: 1.3rem;"></i>
+            <h4 id="hdLightboxTitle" style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #ffffff;">Brochure Full HD Resolution</h4>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button type="button" onclick="zoomLightbox(0.2)" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25); width: 38px; height: 38px; border-radius: 8px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Zoom In (+)">
+                <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </button>
+            <button type="button" onclick="zoomLightbox(-0.2)" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25); width: 38px; height: 38px; border-radius: 8px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Zoom Out (-)">
+                <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </button>
+            <button type="button" onclick="resetLightboxZoom()" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25); padding: 0 14px; height: 38px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;" title="Reset Zoom">
+                100% Reset
+            </button>
+            <a id="hdLightboxDownload" href="#" download style="background: #00A896; color: #fff; text-decoration: none; padding: 0 16px; height: 38px; border-radius: 8px; font-size: 0.88rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-download"></i> Download
+            </a>
+            <button type="button" onclick="closeLightboxModal()" style="background: #ef4444; color: #fff; border: none; width: 38px; height: 38px; border-radius: 8px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Close (Esc)">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Image Container (Scrollable & Zoomable) -->
+    <div id="hdLightboxViewport" style="flex: 1; width: 100%; overflow: auto; display: flex; align-items: center; justify-content: center; cursor: grab;">
+        <img id="hdLightboxImage" src="" alt="Full resolution preview" style="max-height: 85vh; max-width: 95vw; width: auto; height: auto; object-fit: contain; transition: transform 0.2s ease; image-rendering: -webkit-optimize-contrast; image-rendering: high-quality; box-shadow: 0 20px 60px rgba(0,0,0,0.5); border-radius: 8px;">
+    </div>
+
+    <!-- Bottom Hint -->
+    <div style="color: #94a3b8; font-size: 0.8rem; padding-top: 8px;">
+        Tip: Use (+ / -) to zoom or scroll inside to inspect small text and details with crystal clarity. Press ESC to close.
+    </div>
+</div>
+
+<script>
+    let currentLightboxZoom = 1;
+    function openLightboxModal(src, title) {
+        const modal = document.getElementById('hdLightboxModal');
+        const img = document.getElementById('hdLightboxImage');
+        const titleEl = document.getElementById('hdLightboxTitle');
+        const dl = document.getElementById('hdLightboxDownload');
+        
+        currentLightboxZoom = 1;
+        img.style.transform = 'scale(1)';
+        img.src = src;
+        titleEl.textContent = title || 'High Resolution View';
+        dl.href = src;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightboxModal() {
+        document.getElementById('hdLightboxModal').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function zoomLightbox(delta) {
+        currentLightboxZoom = Math.max(0.5, Math.min(3.5, currentLightboxZoom + delta));
+        document.getElementById('hdLightboxImage').style.transform = `scale(${currentLightboxZoom})`;
+    }
+
+    function resetLightboxZoom() {
+        currentLightboxZoom = 1;
+        document.getElementById('hdLightboxImage').style.transform = 'scale(1)';
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightboxModal();
+    });
+</script>
 
 @include('sections.footer')
 
