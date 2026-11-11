@@ -1,4 +1,4 @@
-<!-- Conference Brochures Section (3 Pure Image Cards - Flat Clean Design) -->
+<!-- Conference Brochures Section (100% Pure Image Cards - No Text) -->
 <section id="conference-brochures" style="padding: 40px 0 55px; background: #ffffff; position: relative; font-family: 'Poppins', sans-serif;">
     <div class="container" style="max-width: 1220px; margin: 0 auto; padding: 0 20px;">
 
@@ -62,7 +62,7 @@
                 border-radius: 14px;
                 border: 1.5px solid #e2e8f0;
                 box-shadow: none !important;
-                padding: 12px;
+                padding: 8px;
                 display: flex;
                 flex-direction: column;
                 text-decoration: none !important;
@@ -80,7 +80,7 @@
 
             .brochure-img-frame {
                 width: 100%;
-                height: 380px;
+                height: 420px;
                 border-radius: 10px;
                 overflow: hidden;
                 background: #f8fafc;
@@ -106,52 +106,18 @@
             .brochure-img-card:hover .brochure-main-img {
                 transform: scale(1.02);
             }
-
-            .brochure-title-bar {
-                padding: 12px 6px 4px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 10px;
-                font-size: 0.95rem;
-                font-weight: 700;
-                color: #0f172a;
-                transition: color 0.2s;
-            }
-
-            .brochure-title-bar span {
-                line-height: 1.4;
-            }
-
-            .brochure-title-bar i {
-                color: #00A896;
-                transition: transform 0.2s;
-                flex-shrink: 0;
-            }
-
-            .brochure-img-card:hover .brochure-title-bar {
-                color: #00A896;
-            }
-
-            .brochure-img-card:hover .brochure-title-bar i {
-                transform: translateX(4px);
-            }
         </style>
 
-        <!-- 3 Pure Image Brochure Cards (Clean Flat Design, Zero Shadow, Zero Dark Overlay) -->
+        <!-- 3 Pure Image Brochure Cards (100% Image Only, Zero Text, Zero Shadow) -->
         <div class="brochure-trio-grid">
             @foreach($threeBrochures as $index => $b)
                 @php
                     $imgSrc = asset($b['image']);
                     $bTitle = $b['title'];
                 @endphp
-                <a href="{{ $stallPageUrl }}" class="brochure-img-card" title="Click to view {{ $bTitle }}">
+                <a href="{{ $stallPageUrl }}" class="brochure-img-card" title="{{ $bTitle }}">
                     <div class="brochure-img-frame">
                         <img src="{{ $imgSrc }}" alt="{{ $bTitle }}" class="brochure-main-img" loading="lazy">
-                    </div>
-                    <div class="brochure-title-bar">
-                        <span>{{ $bTitle }}</span>
-                        <i class="fa-solid fa-arrow-right"></i>
                     </div>
                 </a>
             @endforeach
