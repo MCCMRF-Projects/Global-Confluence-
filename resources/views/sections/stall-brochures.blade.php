@@ -11,7 +11,7 @@
         </div>
 
         @php
-            $stallPageUrl = url('/page/stall-booking-and-merchandise');
+            $stallPageUrl = url('/page/stall-booking-details');
 
             // The 3 official conference brochures (Master High-Resolution)
             $threeBrochures = [

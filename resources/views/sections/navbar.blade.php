@@ -97,7 +97,7 @@
 
         <!-- 8. Stall Booking and Merchandise -->
         @if(($settings['nav_stall_show'] ?? '1') == '1')
-            <a href="{{ $settings['nav_stall_url'] ?? '/page/stall-booking-and-merchandise' }}">{{ $settings['nav_stall_label'] ?? 'Stall Booking and Merchandise' }}</a>
+            <a href="{{ $settings['nav_stall_url'] ?? '/page/stall-booking-details' }}">{{ $settings['nav_stall_label'] ?? 'Stall Booking and Merchandise' }}</a>
         @endif
 
         <!-- 9. Glimpse of MCC Dropdown -->

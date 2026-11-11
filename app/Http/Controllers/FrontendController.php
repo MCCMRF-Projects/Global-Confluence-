@@ -40,7 +40,11 @@ class FrontendController extends Controller
             return view('events.hackathon');
         }
 
-        if ($slug === 'stall-booking-and-merchandise' || $slug === 'stall-booking' || $slug === 'stall-booking-merchandise') {
+        if ($slug === 'stall-booking-details' || $slug === 'stall-details' || $slug === 'stall-booking-and-merchandise' || $slug === 'stall-booking' || $slug === 'stall-booking-merchandise') {
+            return view('stall_booking_details');
+        }
+
+        if ($slug === 'stall-booking-archive') {
             $settings = \App\Models\SiteSetting::where('group', 'stall_booking')->pluck('value', 'key')->toArray();
             $brochures = isset($settings['stall_brochures_json']) ? json_decode($settings['stall_brochures_json'], true) : [];
             $sponsors = isset($settings['stall_sponsors_json']) ? json_decode($settings['stall_sponsors_json'], true) : [];

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BioMed Summit 2027 | European Scientific Summit</title>
+    <title>@yield('title', 'Global One Health Confluence 2026 | Madras Christian College')</title>
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="{{ asset('images/MMC-LOGO-2.jpg') }}">
     <!-- Fonts -->

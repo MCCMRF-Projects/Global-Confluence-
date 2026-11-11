@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', ($title ?? 'Custom Page') . ' | Global One Health Confluence 2026')
+
 @section('content')
 
 @include('sections.topbar')
