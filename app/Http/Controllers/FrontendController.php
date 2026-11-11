@@ -40,15 +40,15 @@ class FrontendController extends Controller
             return view('events.hackathon');
         }
 
-        if ($slug === 'stall-booking-details' || $slug === 'stall-details' || $slug === 'stall-booking-and-merchandise' || $slug === 'stall-booking' || $slug === 'stall-booking-merchandise') {
-            return view('stall_booking_details');
-        }
-
-        if ($slug === 'stall-booking-archive') {
+        if ($slug === 'stall-booking-and-merchandise' || $slug === 'stall-booking' || $slug === 'stall-booking-merchandise') {
             $settings = \App\Models\SiteSetting::where('group', 'stall_booking')->pluck('value', 'key')->toArray();
             $brochures = isset($settings['stall_brochures_json']) ? json_decode($settings['stall_brochures_json'], true) : [];
             $sponsors = isset($settings['stall_sponsors_json']) ? json_decode($settings['stall_sponsors_json'], true) : [];
             return view('stall_booking', compact('settings', 'brochures', 'sponsors'));
+        }
+
+        if ($slug === 'stall-booking-details' || $slug === 'stall-details' || $slug === 'brochure-details' || $slug === 'conference-brochures-details') {
+            return view('stall_booking_details');
         }
 
         $formattedTitle = ucwords(str_replace('-', ' ', $slug));

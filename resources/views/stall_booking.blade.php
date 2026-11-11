@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Stall Booking and Merchandise | Global One Health Confluence 2026')
+
 @section('content')
 
 @include('sections.topbar')

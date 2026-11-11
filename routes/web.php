@@ -305,19 +305,18 @@ Route::get('/stall-booking-details', function () {
 })->name('stall_booking_details');
 
 Route::get('/stall-booking-and-merchandise', function () {
-    return view('stall_booking_details');
-})->name('stall_booking_and_merchandise');
-
-Route::get('/stall-booking', function () {
-    return view('stall_booking_details');
-})->name('stall_booking');
-
-Route::get('/stall-booking-archive', function () {
     $settings = \App\Models\SiteSetting::where('group', 'stall_booking')->pluck('value', 'key')->toArray();
     $brochures = isset($settings['stall_brochures_json']) ? json_decode($settings['stall_brochures_json'], true) : [];
     $sponsors = isset($settings['stall_sponsors_json']) ? json_decode($settings['stall_sponsors_json'], true) : [];
     return view('stall_booking', compact('settings', 'brochures', 'sponsors'));
-})->name('stall_booking_archive');
+})->name('stall_booking_and_merchandise');
+
+Route::get('/stall-booking', function () {
+    $settings = \App\Models\SiteSetting::where('group', 'stall_booking')->pluck('value', 'key')->toArray();
+    $brochures = isset($settings['stall_brochures_json']) ? json_decode($settings['stall_brochures_json'], true) : [];
+    $sponsors = isset($settings['stall_sponsors_json']) ? json_decode($settings['stall_sponsors_json'], true) : [];
+    return view('stall_booking', compact('settings', 'brochures', 'sponsors'));
+})->name('stall_booking');
 
 Route::post('/api/submit-paper', [PaperSubmissionController::class, 'store'])->name('api.submit_paper');
 Route::post('/api/register', [RegistrationController::class, 'store']);
