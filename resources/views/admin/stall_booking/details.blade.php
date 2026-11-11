@@ -95,7 +95,10 @@
 @php
     $sectionHeading = $settings['stall_home_title'] ?? 'Conference <span style="color: #009688;">Brochures</span>';
     $isSectionVisible = ($settings['stall_home_show'] ?? '1') == '1';
-    $btnLabel = $settings['stall_home_btn_label'] ?? 'Explore Full Stall Booking & Merchandise Details &rarr;';
+    $btnLabel = $settings['stall_home_btn_label'] ?? 'Explore Conference Brochures &rarr;';
+    if (empty($settings['stall_home_btn_label']) || str_contains($settings['stall_home_btn_label'], 'Stall Booking')) {
+        $btnLabel = 'Explore Conference Brochures &rarr;';
+    }
     $btnUrl = $settings['stall_home_btn_url'] ?? '/page/stall-booking-details';
     $showBtn = ($settings['stall_home_btn_show'] ?? '1') == '1';
 @endphp

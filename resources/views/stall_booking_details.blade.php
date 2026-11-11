@@ -178,9 +178,6 @@
 
                 <!-- Action Bar -->
                 <div class="details-brochure-actions">
-                    <a href="{{ url('/') }}" class="btn-action btn-zoom">
-                        Back to Home
-                    </a>
                     <button type="button" onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" class="btn-action btn-zoom">
                         View Full Resolution (HD Zoom)
                     </button>
@@ -190,56 +187,6 @@
                 </div>
             </div>
         @endforeach
-
-        <!-- Quick Payment QR Section for Stall Booking & Tariff -->
-        <div style="background: linear-gradient(135deg, #0a192f 0%, #0f172a 100%); border-radius: 18px; border: 1.5px solid #1e293b; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); padding: 35px 30px; margin: 35px 0; color: #ffffff;">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 280px;">
-                    <span style="background: rgba(0, 168, 150, 0.2); color: #00e676; font-size: 0.8rem; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-bottom: 10px;">
-                        Fast &amp; Direct Payment
-                    </span>
-                    <h3 style="font-size: 1.65rem; font-weight: 800; color: #ffffff; margin: 0 0 10px 0;">
-                        Scan QR Code for Payment
-                    </h3>
-                    <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin: 0 0 18px 0;">
-                        Scan the official MCC payment QR code using any UPI App (GPay, PhonePe, Paytm) to complete your stall booking or sponsorship contribution.
-                    </p>
-                    <div style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 8px;">
-                        <strong>Instant UPI &amp; Online Payment Gateway</strong>
-                    </div>
-                    <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 20px;">
-                        Official PayU Link: <a href="https://u.payu.in/PAYUMN/IJZcZKXf5LTs" target="_blank" style="color: #2dd4bf; text-decoration: underline;">https://u.payu.in/PAYUMN/IJZcZKXf5LTs</a>
-                    </div>
-                    <a href="https://u.payu.in/PAYUMN/IJZcZKXf5LTs" target="_blank" style="background: linear-gradient(135deg, #00A896, #028090); color: #ffffff; padding: 12px 28px; border-radius: 30px; font-weight: 700; text-decoration: none; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0, 168, 150, 0.35);">
-                        Pay via Online Payment Link &rarr;
-                    </a>
-                </div>
-
-                <div style="background: #ffffff; padding: 18px; border-radius: 16px; text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.3); border: 2px solid #00A896;">
-                    <img src="{{ asset('images/payment_qr_final.png') }}" alt="Official Payment QR Code" style="width: 170px; height: 170px; object-fit: contain; display: block; margin: 0 auto 10px auto;" onerror="this.src='{{ asset('images/stall_booking/payment_qr.png') }}'">
-                    <div style="color: #0a192f; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.5px;">SCAN WITH ANY UPI APP</div>
-                    <div style="color: #64748b; font-size: 0.75rem; margin-top: 4px;">GPay &bull; PhonePe &bull; Paytm</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Contact Support CTA -->
-        <div style="background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 30px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-            <h4 style="font-size: 1.3rem; font-weight: 800; color: #0f172a; margin: 0 0 8px 0;">
-                Interested in Custom Exhibition Space or Sponsorship?
-            </h4>
-            <p style="color: #64748b; font-size: 0.95rem; margin: 0 0 20px 0;">
-                Reach out to our organizing committee for customized branding, exhibition stalls, and industry partnership packages.
-            </p>
-            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                <a href="{{ route('contact') }}" style="background: linear-gradient(135deg, #00A896, #028090); color: #ffffff; padding: 12px 30px; border-radius: 30px; font-weight: 700; text-decoration: none; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px;">
-                    Contact Organizing Committee
-                </a>
-                <a href="{{ url('/') }}" class="btn-action btn-zoom">
-                    Back to Home Page
-                </a>
-            </div>
-        </div>
 
     </div>
 </div>

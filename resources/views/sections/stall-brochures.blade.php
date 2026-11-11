@@ -9,7 +9,10 @@
     $isSectionVisible = ($stallSettings['stall_home_show'] ?? '1') == '1';
     $sectionHeading = $stallSettings['stall_home_title'] ?? 'Conference <span style="color: #009688;">Brochures</span>';
     $stallPageUrl = !empty($stallSettings['stall_home_btn_url']) ? url($stallSettings['stall_home_btn_url']) : url('/page/stall-booking-details');
-    $stallBtnLabel = $stallSettings['stall_home_btn_label'] ?? 'Explore Full Stall Booking & Merchandise Details &rarr;';
+    $stallBtnLabel = $stallSettings['stall_home_btn_label'] ?? 'Explore Conference Brochures &rarr;';
+    if (empty($stallSettings['stall_home_btn_label']) || str_contains($stallSettings['stall_home_btn_label'], 'Stall Booking')) {
+        $stallBtnLabel = 'Explore Conference Brochures &rarr;';
+    }
     $showBtn = ($stallSettings['stall_home_btn_show'] ?? '1') == '1';
 
     $homeBrochures = [];
@@ -254,7 +257,7 @@
         <!-- Section Bottom Button -->
         <div style="text-align: center; margin-top: 15px;">
             <a href="{{ $stallPageUrl }}" style="background: linear-gradient(135deg, #00A896, #028090); color: #ffffff; padding: 12px 32px; border-radius: 30px; font-weight: 700; text-decoration: none; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 8px; border: none; box-shadow: none; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-                <i class="fa-solid fa-store"></i> {!! $stallBtnLabel !!}
+                {!! $stallBtnLabel !!}
             </a>
         </div>
         @endif
