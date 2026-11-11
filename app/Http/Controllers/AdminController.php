@@ -2292,8 +2292,21 @@ class AdminController extends Controller
 
     public function conferenceBrochuresSettings()
     {
-        $settings = \App\Models\SiteSetting::where('group', 'stall_booking')->pluck('value', 'key')->toArray();
-        $homeBrochures = isset($settings['stall_home_brochures_json']) ? json_decode($settings['stall_home_brochures_json'], true) : [];
+        return redirect()->route('admin.stall_booking_details');
+    }
+
+    public function updateConferenceBrochuresSettings(Request $request)
+    {
+        return $this->updateStallBookingDetailsSettings($request);
+    }
+
+    public function stallBookingDetailsSettings()
+    {
+        $detailsSettings = \App\Models\SiteSetting::where('group', 'stall_booking_details')->pluck('value', 'key')->toArray();
+        $stallSettings = \App\Models\SiteSetting::where('group', 'stall_booking')->pluck('value', 'key')->toArray();
+        $settings = array_merge($stallSettings, $detailsSettings);
+
+        $homeBrochures = isset($stallSettings['stall_home_brochures_json']) ? json_decode($stallSettings['stall_home_brochures_json'], true) : [];
         if (empty($homeBrochures)) {
             $homeBrochures = [
                 [
@@ -2313,19 +2326,37 @@ class AdminController extends Controller
                 ],
             ];
         }
-        return view('admin.brochures.index', compact('settings', 'homeBrochures'));
+        return view('admin.stall_booking.details', compact('settings', 'homeBrochures'));
     }
 
-    public function updateConferenceBrochuresSettings(Request $request)
+    public function updateStallBookingDetailsSettings(Request $request)
     {
-        $keys = [
+        // 1. Details Page Banner & Content settings
+        $detailsKeys = [
+            'stall_details_badge',
+            'stall_details_title',
+            'stall_details_subtitle',
+            'stall_details_heading',
+            'stall_details_content',
+        ];
+        foreach ($detailsKeys as $key) {
+            if ($request->has($key)) {
+                \App\Models\SiteSetting::updateOrCreate(
+                    ['key' => $key, 'group' => 'stall_booking_details'],
+                    ['value' => $request->input($key)]
+                );
+            }
+        }
+
+        // 2. Home Section Controls
+        $stallKeys = [
             'stall_home_show',
             'stall_home_title',
             'stall_home_btn_label',
             'stall_home_btn_url',
             'stall_home_btn_show',
         ];
-        foreach ($keys as $key) {
+        foreach ($stallKeys as $key) {
             if ($request->has($key)) {
                 \App\Models\SiteSetting::updateOrCreate(
                     ['key' => $key, 'group' => 'stall_booking'],
@@ -2334,25 +2365,28 @@ class AdminController extends Controller
             }
         }
 
+        // 3. Brochure Images Management
         $hbTitles = $request->input('home_brochure_titles', []);
         $hbUrls = $request->input('home_brochure_urls', []);
         $hbExistingImages = $request->input('home_brochure_existing_images', []);
         $hbUploadedFiles = $request->file('home_brochure_files', []);
 
         $homeBrochures = [];
-        foreach ($hbTitles as $idx => $title) {
-            if (empty(trim($title))) continue;
+        if (!empty($hbTitles)) {
+            foreach ($hbTitles as $idx => $title) {
+                if (empty(trim($title))) continue;
 
-            $imgPath = $hbExistingImages[$idx] ?? 'images/stall_booking/stall_brochure_1.png';
-            if (isset($hbUploadedFiles[$idx]) && $hbUploadedFiles[$idx]->isValid()) {
-                $imgPath = $this->safeUploadImage($hbUploadedFiles[$idx], 'images/stall_booking');
+                $imgPath = $hbExistingImages[$idx] ?? 'images/stall_booking/stall_brochure_1.png';
+                if (isset($hbUploadedFiles[$idx]) && $hbUploadedFiles[$idx]->isValid()) {
+                    $imgPath = $this->safeUploadImage($hbUploadedFiles[$idx], 'images/stall_booking');
+                }
+
+                $homeBrochures[] = [
+                    'title' => trim($title),
+                    'url' => trim($hbUrls[$idx] ?? '/page/stall-booking-details'),
+                    'image' => $imgPath
+                ];
             }
-
-            $homeBrochures[] = [
-                'title' => trim($title),
-                'url' => trim($hbUrls[$idx] ?? '/page/stall-booking-details'),
-                'image' => $imgPath
-            ];
         }
 
         if ($request->filled('new_home_brochure_title') && $request->hasFile('new_home_brochure_file')) {
@@ -2367,38 +2401,14 @@ class AdminController extends Controller
             }
         }
 
-        \App\Models\SiteSetting::updateOrCreate(
-            ['key' => 'stall_home_brochures_json', 'group' => 'stall_booking'],
-            ['value' => json_encode(array_values($homeBrochures))]
-        );
-
-        return back()->with('success', 'Conference Brochures settings updated successfully.');
-    }
-
-    public function stallBookingDetailsSettings()
-    {
-        $settings = \App\Models\SiteSetting::where('group', 'stall_booking_details')->pluck('value', 'key')->toArray();
-        return view('admin.stall_booking.details', compact('settings'));
-    }
-
-    public function updateStallBookingDetailsSettings(Request $request)
-    {
-        $keys = [
-            'stall_details_badge',
-            'stall_details_title',
-            'stall_details_subtitle',
-            'stall_details_heading',
-            'stall_details_content',
-        ];
-        foreach ($keys as $key) {
-            if ($request->has($key)) {
-                \App\Models\SiteSetting::updateOrCreate(
-                    ['key' => $key, 'group' => 'stall_booking_details'],
-                    ['value' => $request->input($key)]
-                );
-            }
+        if (!empty($homeBrochures)) {
+            \App\Models\SiteSetting::updateOrCreate(
+                ['key' => 'stall_home_brochures_json', 'group' => 'stall_booking'],
+                ['value' => json_encode(array_values($homeBrochures))]
+            );
         }
-        return back()->with('success', 'Stall Booking Details page updated successfully.');
+
+        return back()->with('success', 'Stall Booking Details and Conference Brochures updated successfully.');
     }
 
     public function visitSettings()

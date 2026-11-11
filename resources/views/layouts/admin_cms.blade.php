@@ -522,17 +522,12 @@
                 </div>
                 <ul class="sub-nav-links">
                     <li>
-                        <a href="{{ route('admin.conference_brochures') }}" class="{{ request()->routeIs('admin.conference_brochures') ? 'active' : '' }}">
-                            <i class="fa-solid fa-book-open"></i> Conference Brochures
-                        </a>
-                    </li>
-                    <li>
                         <a href="{{ route('admin.stall_booking') }}" class="{{ request()->routeIs('admin.stall_booking') ? 'active' : '' }}">
                             <i class="fa-solid fa-store"></i> Stall Booking &amp; Merchandise
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.stall_booking_details') }}" class="{{ request()->routeIs('admin.stall_booking_details') ? 'active' : '' }}">
+                        <a href="{{ route('admin.stall_booking_details') }}" class="{{ request()->routeIs('admin.stall_booking_details') || request()->routeIs('admin.conference_brochures') ? 'active' : '' }}">
                             <i class="fa-solid fa-file-lines"></i> Stall Booking Details
                         </a>
                     </li>
