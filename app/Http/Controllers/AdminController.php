@@ -2120,7 +2120,29 @@ class AdminController extends Controller
         $settings = \App\Models\SiteSetting::where('group', 'stall_booking')->pluck('value', 'key')->toArray();
         $brochures = isset($settings['stall_brochures_json']) ? json_decode($settings['stall_brochures_json'], true) : [];
         $sponsors = isset($settings['stall_sponsors_json']) ? json_decode($settings['stall_sponsors_json'], true) : [];
-        return view('admin.stall_booking.index', compact('settings', 'brochures', 'sponsors'));
+
+        $homeBrochures = isset($settings['stall_home_brochures_json']) ? json_decode($settings['stall_home_brochures_json'], true) : [];
+        if (empty($homeBrochures)) {
+            $homeBrochures = [
+                [
+                    'title' => 'Partnership Avenues for Analytical Service Providers',
+                    'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.png')) ? 'images/stall_booking/stall_brochure_1.png' : 'images/stall_booking/stall_brochure_1.jpg',
+                    'url' => '/page/stall-booking-details',
+                ],
+                [
+                    'title' => 'Partnership Avenues for Hospitals & Health Sectors',
+                    'image' => 'images/stall_booking/stall_brochure_3.png',
+                    'url' => '/page/stall-booking-details',
+                ],
+                [
+                    'title' => 'Tariff Details & Sponsorship Opportunities',
+                    'image' => 'images/stall_booking/stall_brochure_4.png',
+                    'url' => '/page/stall-booking-details',
+                ],
+            ];
+        }
+
+        return view('admin.stall_booking.index', compact('settings', 'brochures', 'sponsors', 'homeBrochures'));
     }
 
     public function updateStallBookingSettings(Request $request)
@@ -2132,7 +2154,12 @@ class AdminController extends Controller
             'stall_sponsors_title',
             'stall_cta_text',
             'stall_cta_btn_label',
-            'stall_cta_btn_url'
+            'stall_cta_btn_url',
+            'stall_home_show',
+            'stall_home_title',
+            'stall_home_btn_label',
+            'stall_home_btn_url',
+            'stall_home_btn_show',
         ];
         foreach ($keys as $key) {
             if ($request->has($key)) {
@@ -2142,6 +2169,46 @@ class AdminController extends Controller
                 );
             }
         }
+
+        // Process Home Screen Showcase Brochures
+        $hbTitles = $request->input('home_brochure_titles', []);
+        $hbUrls = $request->input('home_brochure_urls', []);
+        $hbExistingImages = $request->input('home_brochure_existing_images', []);
+        $hbUploadedFiles = $request->file('home_brochure_files', []);
+
+        $homeBrochures = [];
+        foreach ($hbTitles as $idx => $title) {
+            if (empty(trim($title))) continue;
+
+            $imgPath = $hbExistingImages[$idx] ?? 'images/stall_booking/stall_brochure_1.png';
+            if (isset($hbUploadedFiles[$idx]) && $hbUploadedFiles[$idx]->isValid()) {
+                $imgPath = $this->safeUploadImage($hbUploadedFiles[$idx], 'images/stall_booking');
+            }
+
+            $homeBrochures[] = [
+                'title' => trim($title),
+                'url' => trim($hbUrls[$idx] ?? '/page/stall-booking-details'),
+                'image' => $imgPath
+            ];
+        }
+
+        // Check if adding a new home brochure
+        if ($request->filled('new_home_brochure_title') && $request->hasFile('new_home_brochure_file')) {
+            $file = $request->file('new_home_brochure_file');
+            if ($file->isValid()) {
+                $imgPath = $this->safeUploadImage($file, 'images/stall_booking');
+                $homeBrochures[] = [
+                    'title' => trim($request->input('new_home_brochure_title')),
+                    'url' => trim($request->input('new_home_brochure_url', '/page/stall-booking-details')),
+                    'image' => $imgPath
+                ];
+            }
+        }
+
+        \App\Models\SiteSetting::updateOrCreate(
+            ['key' => 'stall_home_brochures_json', 'group' => 'stall_booking'],
+            ['value' => json_encode(array_values($homeBrochures))]
+        );
 
         // Process Brochures
         $bTitles = $request->input('brochure_titles', []);
