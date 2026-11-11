@@ -1,15 +1,8 @@
 <!-- Conference Brochures Section (100% Pure Image Cards - No Text) -->
-<section id="conference-brochures" style="padding: 40px 0 55px; background: #ffffff; position: relative; font-family: 'Poppins', sans-serif;">
+<section id="conference-brochures" style="padding: 15px 0 45px; background: #ffffff; position: relative; font-family: 'Poppins', sans-serif;">
     <div class="container" style="max-width: 1220px; margin: 0 auto; padding: 0 20px;">
 
         @php
-            $stallSettings = [];
-            try {
-                $stallSettings = \App\Models\SiteSetting::where('group', 'stall_booking')->pluck('value', 'key')->toArray();
-            } catch (\Throwable $e) {
-                $stallSettings = [];
-            }
-
             $stallPageUrl = url('/page/stall-booking-and-merchandise');
 
             // The 3 official conference brochures (Master High-Resolution)
@@ -28,20 +21,6 @@
                 ],
             ];
         @endphp
-
-        <!-- Section Header -->
-        <div style="text-align: center; margin-bottom: 35px;">
-            <span style="display: inline-flex; align-items: center; gap: 8px; background: #e6f7f5; color: #009688; border: 1px solid #b2dfdb; padding: 6px 20px; border-radius: 50px; font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 12px;">
-                <i class="fa-solid fa-book-open"></i> {{ $stallSettings['stall_home_badge'] ?? 'Conference Brochures' }}
-            </span>
-            <h2 style="font-size: clamp(1.9rem, 3.5vw, 2.5rem); font-weight: 800; color: #0f172a; margin: 0 0 10px 0; letter-spacing: -0.5px;">
-                {!! $stallSettings['stall_home_title'] ?? 'Partnership Avenues &amp; <span style="color: #009688;">Sponsorship Tariff</span>' !!}
-            </h2>
-            <div style="width: 60px; height: 3.5px; background: linear-gradient(90deg, #009688, #84cc16); margin: 0 auto 14px auto; border-radius: 4px;"></div>
-            <p style="max-width: 680px; margin: 0 auto; color: #64748b; font-size: 1rem; line-height: 1.6; font-weight: 500;">
-                {{ $stallSettings['stall_home_subtitle'] ?? 'Click any brochure to explore complete partnership avenues, tariff matrix, exhibition stall details, and sponsorship packages.' }}
-            </p>
-        </div>
 
         <style>
             .brochure-trio-grid {
