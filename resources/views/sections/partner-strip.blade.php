@@ -40,6 +40,7 @@
     }
 
     $stripLogoHeight = (int)(($settings['partner_strip_logo_height'] ?? null) ?: (\App\Models\SiteSetting::where('key', 'partner_strip_logo_height')->value('value') ?: 95));
+    $stripScrollSpeed = (int)(($settings['partner_strip_speed'] ?? null) ?: (\App\Models\SiteSetting::where('key', 'partner_strip_speed')->value('value') ?: 40));
     $cardHeight = $stripLogoHeight + 35;
     $cardWidth = max(260, (int)($stripLogoHeight * 3.1));
     $imgMaxWidth = (int)($cardWidth * 0.82);
@@ -181,7 +182,7 @@
         display: flex;
         width: max-content;
         will-change: transform;
-        animation: ticker-slide 40s linear infinite;
+        animation: ticker-slide {{ $stripScrollSpeed }}s linear infinite;
         align-items: center;
     }
 

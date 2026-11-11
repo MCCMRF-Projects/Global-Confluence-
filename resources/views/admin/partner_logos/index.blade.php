@@ -21,6 +21,7 @@
 
     @php
         $currentLogoHeight = (int)(\App\Models\SiteSetting::where('key', 'partner_strip_logo_height')->value('value') ?? 95);
+        $currentLogoSpeed = (int)(\App\Models\SiteSetting::where('key', 'partner_strip_speed')->value('value') ?? 40);
     @endphp
 
     <style>
@@ -61,10 +62,12 @@
         }
     </style>
 
-    <!-- Logo Size Controller Card with Slider (Image 2) -->
-    <div class="card" style="background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 22px 28px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+    <!-- Logo Size & Scroll Speed Controller Card -->
+    <div class="card" style="background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 24px 28px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
         <form action="{{ route('admin.settings.update') }}" method="POST" style="margin: 0;">
             @csrf
+            
+            <!-- Row 1: Logo Size Slider -->
             <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;">
                 <div style="min-width: 220px;">
                     <h3 style="margin: 0 0 4px 0; font-size: 1.15rem; font-weight: 800; color: #0a192f; display: flex; align-items: center; gap: 8px;">
@@ -74,7 +77,7 @@
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 16px; flex: 1; max-width: 620px; justify-content: flex-end; flex-wrap: wrap;">
-                    <!-- Range Slider as in Image 2 -->
+                    <!-- Range Slider as in Image 1 -->
                     <div style="flex: 1; min-width: 220px; max-width: 360px; display: flex; flex-direction: column; gap: 6px;">
                         <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: #64748b;">
                             <span>Smaller (50px)</span>
@@ -103,12 +106,62 @@
                         <span style="font-weight: 700; color: #64748b; font-size: 0.85rem;">px</span>
                     </div>
 
-                    <span id="saveStatusBadge" style="font-size: 0.82rem; font-weight: 700; color: #16a34a; min-width: 80px;"></span>
+                    <span id="saveStatusBadge" style="font-size: 0.82rem; font-weight: 700; color: #16a34a; min-width: 75px;"></span>
                     <button type="submit" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; border: none; padding: 11px 22px; border-radius: 10px; font-weight: 700; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); transition: all 0.2s ease;">
                         <i class="fa-solid fa-floppy-disk"></i> Save Size
                     </button>
                 </div>
             </div>
+
+            <!-- Divider -->
+            <div style="width: 100%; height: 1px; background: #e2e8f0; margin: 20px 0;"></div>
+
+            <!-- Row 2: Scroll Speed (Seconds) Slider (Image 2) -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;">
+                <div style="min-width: 220px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 1.15rem; font-weight: 800; color: #0a192f; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-gauge-high" style="color: #0284c7;"></i> Scroll Speed (Seconds)
+                    </h3>
+                    <p style="margin: 0; color: #64748b; font-size: 0.88rem;">Slide to control how fast the partner logos marquee ticker scrolls.</p>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 16px; flex: 1; max-width: 620px; justify-content: flex-end; flex-wrap: wrap;">
+                    <!-- Range Slider as in Image 1 -->
+                    <div style="flex: 1; min-width: 220px; max-width: 360px; display: flex; flex-direction: column; gap: 6px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: #64748b;">
+                            <span>Faster (15s)</span>
+                            <span>Slower (90s)</span>
+                        </div>
+                        <input type="range" 
+                               id="logoSpeedSlider" 
+                               min="15" 
+                               max="90" 
+                               step="1" 
+                               value="{{ $currentLogoSpeed }}" 
+                               class="logo-size-range-track"
+                               oninput="syncLogoSpeedSlider(this.value)">
+                    </div>
+
+                    <!-- Number Badge -->
+                    <div style="display: flex; align-items: center; gap: 4px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 6px 12px;">
+                        <input type="number" 
+                               name="partner_strip_speed" 
+                               id="logoSpeedInput" 
+                               min="10" 
+                               max="120" 
+                               value="{{ $currentLogoSpeed }}" 
+                               style="width: 55px; border: none; background: transparent; font-weight: 800; text-align: center; font-size: 1.05rem; color: #0284c7; outline: none;"
+                               oninput="syncLogoSpeedInput(this.value)">
+                        <span style="font-weight: 700; color: #64748b; font-size: 0.85rem;">sec</span>
+                    </div>
+
+                    <span id="speedSaveStatusBadge" style="font-size: 0.82rem; font-weight: 700; color: #16a34a; min-width: 75px;"></span>
+                    <button type="submit" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; border: none; padding: 11px 22px; border-radius: 10px; font-weight: 700; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); transition: all 0.2s ease;">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Speed
+                    </button>
+                </div>
+            </div>
+
         </form>
     </div>
 
@@ -209,6 +262,8 @@
         document.addEventListener('DOMContentLoaded', function () {
             const initialVal = document.getElementById('logoHeightInput')?.value || 95;
             updateSliderTrack(initialVal);
+            const initialSpeed = document.getElementById('logoSpeedInput')?.value || 40;
+            updateSpeedTrack(initialSpeed);
 
             const el = document.getElementById('sortable-logos-list');
             if (el) {
@@ -311,6 +366,55 @@
             if (slider) slider.value = val;
             updateSliderTrack(val);
             syncLogoSlider(val);
+        }
+
+        let speedSaveTimer = null;
+        function updateSpeedTrack(val) {
+            const slider = document.getElementById('logoSpeedSlider');
+            if (!slider) return;
+            const min = parseFloat(slider.min) || 15;
+            const max = parseFloat(slider.max) || 90;
+            const pct = Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100));
+            slider.style.setProperty('--progress', pct + '%');
+        }
+
+        function syncLogoSpeedSlider(val) {
+            const input = document.getElementById('logoSpeedInput');
+            if (input) input.value = val;
+            updateSpeedTrack(val);
+
+            const badge = document.getElementById('speedSaveStatusBadge');
+            if (badge) {
+                badge.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+                badge.style.color = '#0284c7';
+            }
+
+            clearTimeout(speedSaveTimer);
+            speedSaveTimer = setTimeout(function () {
+                const formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('partner_strip_speed', val);
+
+                fetch("{{ route('admin.settings.update') }}", {
+                    method: "POST",
+                    body: formData
+                }).then(() => {
+                    if (badge) {
+                        badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Saved!';
+                        badge.style.color = '#16a34a';
+                        setTimeout(() => { badge.innerHTML = ''; }, 2500);
+                    }
+                }).catch(() => {
+                    if (badge) { badge.innerHTML = ''; }
+                });
+            }, 300);
+        }
+
+        function syncLogoSpeedInput(val) {
+            const slider = document.getElementById('logoSpeedSlider');
+            if (slider) slider.value = val;
+            updateSpeedTrack(val);
+            syncLogoSpeedSlider(val);
         }
     </script>
 @endsection

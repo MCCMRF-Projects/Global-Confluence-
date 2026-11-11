@@ -47,6 +47,42 @@
         outline: none;
     }
 
+    .speed-range-track {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 9px;
+        border-radius: 999px;
+        background: linear-gradient(to right, #0284c7 0%, #0284c7 var(--progress, 35%), #64748b var(--progress, 35%), #64748b 100%);
+        outline: none;
+        cursor: pointer;
+        transition: background 0.05s ease;
+    }
+    .speed-range-track::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #0284c7;
+        border: 2.5px solid #ffffff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        cursor: pointer;
+        transition: transform 0.15s ease;
+    }
+    .speed-range-track::-webkit-slider-thumb:hover {
+        transform: scale(1.15);
+    }
+    .speed-range-track::-moz-range-thumb {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #0284c7;
+        border: 2.5px solid #ffffff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        cursor: pointer;
+    }
+
     /* Live Preview Component */
     .prev-topbar-desktop {
         padding: 10px 22px;
@@ -368,17 +404,36 @@
                         </div>
                     </div>
 
-                    <!-- Scroll Speed -->
+                    <!-- Scroll Speed (Seconds) -->
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <label class="form-label" style="margin: 0;">Scroll Speed (Seconds)</label>
-                            <span id="speed-val-badge" style="font-size: 0.82rem; font-weight: 700; color: #009688; background: #e0f2fe; padding: 2px 8px; border-radius: 6px;">
-                                {{ $settings['topbar_speed'] ?? '55' }}s
-                            </span>
+                            <label class="form-label" style="margin: 0; font-weight: 800; color: #0a192f; font-size: 0.95rem;">Scroll Speed (Seconds)</label>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="range" id="topbar_speed_range" min="15" max="150" value="{{ $settings['topbar_speed'] ?? '55' }}" style="flex: 1; accent-color: #009688;" oninput="syncSpeed(this.value)">
-                            <input type="number" id="topbar_speed" name="topbar_speed" value="{{ $settings['topbar_speed'] ?? '55' }}" class="form-input" style="width: 85px;" min="10" max="200" oninput="syncSpeed(this.value)">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: #64748b;">
+                                    <span>Faster (15s)</span>
+                                    <span>Slower (150s)</span>
+                                </div>
+                                <input type="range" 
+                                       id="topbar_speed_range" 
+                                       min="15" 
+                                       max="150" 
+                                       value="{{ $settings['topbar_speed'] ?? '55' }}" 
+                                       class="speed-range-track" 
+                                       oninput="syncSpeed(this.value)">
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 4px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 6px 12px; flex-shrink: 0;">
+                                <input type="number" 
+                                       id="topbar_speed" 
+                                       name="topbar_speed" 
+                                       value="{{ $settings['topbar_speed'] ?? '55' }}" 
+                                       style="width: 50px; border: none; background: transparent; font-weight: 800; text-align: center; font-size: 1.05rem; color: #0284c7; outline: none;" 
+                                       min="10" 
+                                       max="200" 
+                                       oninput="syncSpeed(this.value)">
+                                <span style="font-weight: 700; color: #64748b; font-size: 0.85rem;">sec</span>
+                            </div>
                         </div>
                     </div>
 
@@ -460,17 +515,33 @@
         }
     }
 
+    function updateSpeedSliderTrack(val) {
+        const slider = document.getElementById('topbar_speed_range');
+        if (!slider) return;
+        const min = parseFloat(slider.min) || 15;
+        const max = parseFloat(slider.max) || 150;
+        const pct = Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100));
+        slider.style.setProperty('--progress', pct + '%');
+    }
+
     function syncSpeed(val) {
         const speed = Math.max(10, parseInt(val) || 55);
-        document.getElementById('topbar_speed_range').value = speed;
-        document.getElementById('topbar_speed').value = speed;
-        document.getElementById('speed-val-badge').textContent = speed + 's';
+        const slider = document.getElementById('topbar_speed_range');
+        const input = document.getElementById('topbar_speed');
+        if (slider) slider.value = speed;
+        if (input) input.value = speed;
+        updateSpeedSliderTrack(speed);
 
         const marquee = document.getElementById('prev-marquee-content');
         if (marquee) {
             marquee.style.animationDuration = speed + 's';
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const initSpeed = document.getElementById('topbar_speed')?.value || 55;
+        updateSpeedSliderTrack(initSpeed);
+    });
 
     function renumberTickerItems() {
         const container = document.getElementById('ticker-items-container');
