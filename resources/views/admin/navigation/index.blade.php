@@ -448,22 +448,22 @@
             </div>
         </div>
 
-        <!-- 8. Stall Booking and Merchandise -->
+        <!-- 8. Stall Booking and Merchandise (Dropdown) -->
         <div class="nav-item-card" style="border-left: 4px solid #8b5cf6;">
             <div class="nav-item-header">
                 <div class="nav-item-title">
-                    <i class="fa-solid fa-store" style="color: #8b5cf6;"></i> 8. Stall Booking & Merchandise Link
-                    <span class="badge-dropdown" style="background-color: #f3e8ff; color: #6b21a8;">Blank Page Ready</span>
+                    <i class="fa-solid fa-store" style="color: #8b5cf6;"></i> 8. Stall Booking &amp; Merchandise Dropdown Header &amp; Submenus
+                    <span class="badge-dropdown" style="background-color: #f3e8ff; color: #6b21a8;">Dropdown Menu</span>
                 </div>
             </div>
-            <div class="form-row">
+            <div class="form-row" style="margin-bottom: 15px;">
                 <div class="form-group">
-                    <label>Menu Item Display Name (Label)</label>
+                    <label>Dropdown Parent Name (Label)</label>
                     <input type="text" name="nav_stall_label" value="{{ $settings['nav_stall_label'] ?? 'Stall Booking and Merchandise' }}" required>
                 </div>
                 <div class="form-group">
-                    <label>Target URL / Path</label>
-                    <input type="text" name="nav_stall_url" value="{{ $settings['nav_stall_url'] ?? '/page/stall-booking-and-merchandise' }}" required>
+                    <label>Parent Target Link (Default: #)</label>
+                    <input type="text" name="nav_stall_url" value="{{ $settings['nav_stall_url'] ?? '#' }}">
                 </div>
                 <div class="form-group">
                     <label>Status</label>
@@ -471,6 +471,49 @@
                         <option value="1" {{ ($settings['nav_stall_show'] ?? '1') == '1' ? 'selected' : '' }}>Visible</option>
                         <option value="0" {{ ($settings['nav_stall_show'] ?? '1') == '0' ? 'selected' : '' }}>Hidden</option>
                     </select>
+                </div>
+            </div>
+
+            <!-- Submenu Items inside Stall Booking Dropdown -->
+            <div style="background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 10px;">
+                <h5 style="margin-bottom: 12px; color: #475569; font-weight: 600; font-size: 0.85rem;">SUBMENU ITEMS INSIDE STALL BOOKING DROPDOWN:</h5>
+
+                <!-- Submenu 1: Original Stall Booking & Merchandise Page -->
+                <div class="form-row" style="margin-bottom: 12px;">
+                    <div class="form-group">
+                        <label>Submenu Item 1 Label</label>
+                        <input type="text" name="nav_stall_item1_label" value="{{ $settings['nav_stall_item1_label'] ?? 'Stall Booking and Merchandise' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Submenu Item 1 Target URL</label>
+                        <input type="text" name="nav_stall_item1_url" value="{{ $settings['nav_stall_item1_url'] ?? '/page/stall-booking-and-merchandise' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="nav_stall_item1_show">
+                            <option value="1" {{ ($settings['nav_stall_item1_show'] ?? '1') == '1' ? 'selected' : '' }}>Visible</option>
+                            <option value="0" {{ ($settings['nav_stall_item1_show'] ?? '1') == '0' ? 'selected' : '' }}>Hidden</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Submenu 2: Stall Booking Details Page -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Submenu Item 2 Label</label>
+                        <input type="text" name="nav_stall_item2_label" value="{{ $settings['nav_stall_item2_label'] ?? 'Stall Booking Details' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Submenu Item 2 Target URL</label>
+                        <input type="text" name="nav_stall_item2_url" value="{{ $settings['nav_stall_item2_url'] ?? '/page/stall-booking-details' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="nav_stall_item2_show">
+                            <option value="1" {{ ($settings['nav_stall_item2_show'] ?? '1') == '1' ? 'selected' : '' }}>Visible</option>
+                            <option value="0" {{ ($settings['nav_stall_item2_show'] ?? '1') == '0' ? 'selected' : '' }}>Hidden</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>

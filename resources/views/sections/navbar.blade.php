@@ -95,9 +95,26 @@
             <a href="{{ $settings['nav_preconf_url'] ?? route('pre-conference') }}">{{ $settings['nav_preconf_label'] ?? 'Pre-Conference' }}</a>
         @endif
 
-        <!-- 8. Stall Booking and Merchandise -->
+        <!-- 8. Stall Booking and Merchandise (Dropdown) -->
         @if(($settings['nav_stall_show'] ?? '1') == '1')
-            <a href="{{ $settings['nav_stall_url'] ?? '/page/stall-booking-and-merchandise' }}">{{ $settings['nav_stall_label'] ?? 'Stall Booking and Merchandise' }}</a>
+            <div class="nav-dropdown">
+                <a href="{{ $settings['nav_stall_url'] ?? '#' }}" style="display: flex; align-items: center;">
+                    {{ $settings['nav_stall_label'] ?? 'Stall Booking and Merchandise' }}
+                    <i class="fa-solid fa-chevron-down nav-arrow" style="font-size: 0.75rem; margin-left: 4px; transition: transform 0.2s;"></i>
+                </a>
+                <div class="nav-dropdown-content" style="min-width: 260px;">
+                    @if(($settings['nav_stall_item1_show'] ?? '1') == '1')
+                        <a href="{{ $settings['nav_stall_item1_url'] ?? url('/page/stall-booking-and-merchandise') }}">
+                            {{ $settings['nav_stall_item1_label'] ?? 'Stall Booking and Merchandise' }}
+                        </a>
+                    @endif
+                    @if(($settings['nav_stall_item2_show'] ?? '1') == '1')
+                        <a href="{{ $settings['nav_stall_item2_url'] ?? url('/page/stall-booking-details') }}">
+                            {{ $settings['nav_stall_item2_label'] ?? 'Stall Booking Details' }}
+                        </a>
+                    @endif
+                </div>
+            </div>
         @endif
 
         <!-- 9. Glimpse of MCC Dropdown -->
