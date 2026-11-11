@@ -9,6 +9,7 @@
     @include('sections.about-mcc')
     @include('sections.about-dept')
     @include('sections.about')
+    @include('sections.stall-brochures')
     @include('sections.deadlines')
     @include('sections.highlights')
     @include('sections.participants')
