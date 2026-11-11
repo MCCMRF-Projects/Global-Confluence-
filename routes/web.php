@@ -479,9 +479,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/contact', [AdminController::class, 'contactSettings'])->name('admin.contact');
     Route::post('/contact', [AdminController::class, 'updateContactSettings'])->name('admin.contact.update');
 
-    // 13. Stall Booking & Merchandise
+    // 8. Stall Booking & Merchandise (Dropdown matching UI)
+    Route::get('/conference-brochures', [AdminController::class, 'conferenceBrochuresSettings'])->name('admin.conference_brochures');
+    Route::post('/conference-brochures', [AdminController::class, 'updateConferenceBrochuresSettings'])->name('admin.conference_brochures.update');
+
     Route::get('/stall-booking', [AdminController::class, 'stallBookingSettings'])->name('admin.stall_booking');
     Route::post('/stall-booking', [AdminController::class, 'updateStallBookingSettings'])->name('admin.stall_booking.update');
+
+    Route::get('/stall-booking-details-cms', [AdminController::class, 'stallBookingDetailsSettings'])->name('admin.stall_booking_details');
+    Route::post('/stall-booking-details-cms', [AdminController::class, 'updateStallBookingDetailsSettings'])->name('admin.stall_booking_details.update');
 
 
     // LEGACY BUT NEEDED FOR NOW:

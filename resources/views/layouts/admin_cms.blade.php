@@ -507,11 +507,36 @@
                 </a>
             </li>
 
-            <!-- 8. Stall Booking and Merchandise -->
-            <li>
-                <a href="{{ route('admin.stall_booking') }}" class="nav-item-link {{ request()->routeIs('admin.stall_booking') ? 'active' : '' }}">
-                    <i class="fa-solid fa-store"></i> 8. Stall Booking & Merchandise
-                </a>
+            <!-- 8. Stall Booking and Merchandise (Dropdown matching UI) -->
+            @php
+                $isStallActive = request()->routeIs('admin.stall_booking') 
+                    || request()->routeIs('admin.conference_brochures') 
+                    || request()->routeIs('admin.stall_booking_details');
+            @endphp
+            <li class="nav-item-dropdown {{ $isStallActive ? 'open' : '' }}">
+                <div class="nav-dropdown-toggle" onclick="toggleNavDropdown(this)">
+                    <div class="toggle-left">
+                        <i class="fa-solid fa-store"></i> 8. Stall Booking &amp; Merchandise
+                    </div>
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <ul class="sub-nav-links">
+                    <li>
+                        <a href="{{ route('admin.conference_brochures') }}" class="{{ request()->routeIs('admin.conference_brochures') ? 'active' : '' }}">
+                            <i class="fa-solid fa-book-open"></i> Conference Brochures
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.stall_booking') }}" class="{{ request()->routeIs('admin.stall_booking') ? 'active' : '' }}">
+                            <i class="fa-solid fa-store"></i> Stall Booking &amp; Merchandise
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.stall_booking_details') }}" class="{{ request()->routeIs('admin.stall_booking_details') ? 'active' : '' }}">
+                            <i class="fa-solid fa-file-lines"></i> Stall Booking Details
+                        </a>
+                    </li>
+                </ul>
             </li>
 
             <!-- 9. Glimpse of MCC (Dropdown matching UI) -->
