@@ -26,39 +26,34 @@
     $bannerTitle = $detailsSettings['stall_details_title'] ?? 'Stall Booking & Merchandise';
     $subtitle = $detailsSettings['stall_details_subtitle'] ?? 'Partnership Avenues, Tariff Details & Sponsorship Opportunities | Global One Health Confluence 2026';
 
-    // The 3 master conference brochures (from Image 1, synced with admin CMS)
+    // The primary brochure (Item 1)
     $homeBrochures = [];
     if (!empty($stallSettings['stall_home_brochures_json'])) {
         $homeBrochures = json_decode($stallSettings['stall_home_brochures_json'], true) ?: [];
     }
 
-    if (empty($homeBrochures)) {
-        $homeBrochures = [
-            [
-                'title' => 'Partnership Avenues for Analytical Service Providers',
-                'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.png')) ? 'images/stall_booking/stall_brochure_1.png' : 'images/stall_booking/stall_brochure_1.jpg',
-            ],
-            [
-                'title' => 'Partnership Avenues for Hospitals & Health Sectors',
-                'image' => 'images/stall_booking/stall_brochure_3.png',
-            ],
-            [
-                'title' => 'Tariff Details & Sponsorship Opportunities',
-                'image' => 'images/stall_booking/stall_brochure_4.png',
-            ],
-        ];
+    $firstBrochure = !empty($homeBrochures) ? $homeBrochures[0] : [
+        'title' => 'Partnership Avenues for Analytical Service Providers',
+        'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.png')) ? 'images/stall_booking/stall_brochure_1.png' : 'images/stall_booking/stall_brochure_1.jpg',
+    ];
+
+    $rawImg = $firstBrochure['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+    if ($rawImg === 'images/stall_booking/stall_brochure_1.jpg' && file_exists(public_path('images/stall_booking/stall_brochure_1.png'))) {
+        $rawImg = 'images/stall_booking/stall_brochure_1.png';
     }
+    $imgSrc = asset($rawImg);
+    $bTitle = $firstBrochure['title'] ?? 'Partnership Avenues for Analytical Service Providers';
 @endphp
 
 <style>
     .stall-details-wrapper {
         background: #f8fafc;
-        padding: 50px 20px 80px;
+        padding: 40px 20px 70px;
         font-family: 'Poppins', sans-serif;
     }
 
     .stall-details-container {
-        max-width: 1040px;
+        max-width: 980px;
         margin: 0 auto;
     }
 
@@ -68,12 +63,7 @@
         border: 1px solid #e2e8f0;
         box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
         padding: 24px;
-        margin-bottom: 45px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .details-brochure-card:hover {
-        box-shadow: 0 18px 45px rgba(0, 168, 150, 0.12);
+        margin-bottom: 30px;
     }
 
     .details-card-header {
@@ -88,24 +78,10 @@
     }
 
     .details-card-title {
-        font-size: 1.25rem;
+        font-size: 1.3rem;
         font-weight: 800;
         color: #0f172a;
         margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .details-card-badge {
-        background: #e6f7f5;
-        color: #00A896;
-        padding: 4px 14px;
-        border-radius: 20px;
-        font-weight: 700;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
     }
 
     .details-brochure-img {
@@ -137,14 +113,13 @@
     }
 
     .btn-action {
-        padding: 10px 22px;
+        padding: 11px 24px;
         border-radius: 30px;
-        font-size: 0.88rem;
+        font-size: 0.9rem;
         font-weight: 700;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
         cursor: pointer;
         transition: all 0.2s ease;
     }
@@ -176,7 +151,7 @@
 </style>
 
 <!-- Page Banner -->
-<div class="page-banner" style="background: linear-gradient(135deg, #0a192f 0%, #0f172a 50%, #112240 100%); padding: 65px 20px 60px; text-align: center; color: #ffffff; position: relative;">
+<div class="page-banner" style="background: linear-gradient(135deg, #0a192f 0%, #0f172a 50%, #112240 100%); padding: 60px 20px 55px; text-align: center; color: #ffffff; position: relative;">
     <div class="page-banner-content" style="max-width: 900px; margin: 0 auto; position: relative; z-index: 5;">
         <span style="display: inline-block; padding: 5px 16px; background: rgba(0, 168, 150, 0.2); color: #2dd4bf; border: 1px solid rgba(45, 212, 191, 0.35); border-radius: 30px; font-weight: 700; font-size: 0.8rem; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 14px;">
             {{ $badge }}
@@ -190,106 +165,29 @@
     </div>
 </div>
 
-<!-- Main Details Section (Featuring the 3 Brochures from Image 1) -->
+<!-- Main Details Section -->
 <div class="stall-details-wrapper">
     <div class="stall-details-container">
 
-        <!-- Top Header Card -->
-        <div style="background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 25px 30px; margin-bottom: 35px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-            <div>
-                <h3 style="margin: 0 0 4px 0; font-size: 1.35rem; font-weight: 800; color: #0f172a;">
-                    <i class="fa-solid fa-book-open" style="color: #00A896; margin-right: 8px;"></i> Conference Brochures &amp; Tariff Details
-                </h3>
-                <p style="margin: 0; color: #64748b; font-size: 0.95rem;">
-                    Inspect the official partnership brochures, stall deliverables, and sponsorship opportunities below.
-                </p>
+        <!-- The Main Official Brochure (Clean, Zero Icons) -->
+        <div class="details-brochure-card">
+            <div class="details-card-header">
+                <h3 class="details-card-title">{{ $bTitle }}</h3>
             </div>
-            <div style="display: flex; gap: 10px; align-items: center;">
+
+            <!-- High Quality Brochure Image -->
+            <img src="{{ $imgSrc }}" alt="{{ $bTitle }}" class="details-brochure-img" loading="lazy" onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" title="Click to open Full Resolution Zoom">
+
+            <!-- Action Bar (Zero Icons) -->
+            <div class="details-brochure-actions">
                 <a href="{{ url('/') }}" class="btn-action btn-zoom">
-                    <i class="fa-solid fa-arrow-left"></i> Back to Home
+                    Back to Home
                 </a>
-            </div>
-        </div>
-
-        <!-- The 3 Official Brochures (Presented in Full Master High-Resolution) -->
-        @foreach($homeBrochures as $index => $brochure)
-            @php
-                $rawImg = $brochure['image'] ?? 'images/stall_booking/stall_brochure_1.png';
-                if ($rawImg === 'images/stall_booking/stall_brochure_1.jpg' && file_exists(public_path('images/stall_booking/stall_brochure_1.png'))) {
-                    $rawImg = 'images/stall_booking/stall_brochure_1.png';
-                }
-                $imgSrc = asset($rawImg);
-                $bTitle = $brochure['title'] ?? 'Brochure ' . ($index + 1);
-            @endphp
-            <div class="details-brochure-card">
-                <div class="details-card-header">
-                    <h3 class="details-card-title">
-                        <i class="fa-solid fa-file-image" style="color: #00A896;"></i> {{ $bTitle }}
-                    </h3>
-                    <span class="details-card-badge">Brochure {{ $index + 1 }} of {{ count($homeBrochures) }}</span>
-                </div>
-
-                <!-- High Quality Brochure Image -->
-                <img src="{{ $imgSrc }}" alt="{{ $bTitle }}" class="details-brochure-img" loading="lazy" onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" title="Click to open Full Resolution Zoom">
-
-                <!-- Action Bar -->
-                <div class="details-brochure-actions">
-                    <button type="button" onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" class="btn-action btn-zoom">
-                        <i class="fa-solid fa-up-right-and-down-left-from-center"></i> View Full Resolution (HD Zoom)
-                    </button>
-                    <a href="{{ $imgSrc }}" download class="btn-action btn-download">
-                        <i class="fa-solid fa-download"></i> Download Brochure
-                    </a>
-                </div>
-            </div>
-        @endforeach
-
-        <!-- Quick Payment QR Section for Stall Booking & Tariff -->
-        <div style="background: linear-gradient(135deg, #0a192f 0%, #0f172a 100%); border-radius: 18px; border: 1.5px solid #1e293b; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); padding: 35px 30px; margin: 35px 0; color: #ffffff;">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 280px;">
-                    <span style="background: rgba(0, 168, 150, 0.2); color: #00e676; font-size: 0.8rem; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-bottom: 10px;">
-                        Fast &amp; Direct Payment
-                    </span>
-                    <h3 style="font-size: 1.65rem; font-weight: 800; color: #ffffff; margin: 0 0 10px 0;">
-                        Scan QR Code for Payment
-                    </h3>
-                    <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin: 0 0 18px 0;">
-                        Scan the official MCC payment QR code using any UPI App (GPay, PhonePe, Paytm) to complete your stall booking or sponsorship contribution.
-                    </p>
-                    <div style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 8px;">
-                        <i class="fa-solid fa-shield-halved" style="color: #00A896;"></i> <strong>Instant UPI &amp; Online Payment Gateway</strong>
-                    </div>
-                    <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 20px;">
-                        Official PayU Link: <a href="https://u.payu.in/PAYUMN/IJZcZKXf5LTs" target="_blank" style="color: #2dd4bf; text-decoration: underline;">https://u.payu.in/PAYUMN/IJZcZKXf5LTs</a>
-                    </div>
-                    <a href="https://u.payu.in/PAYUMN/IJZcZKXf5LTs" target="_blank" style="background: linear-gradient(135deg, #00A896, #028090); color: #ffffff; padding: 12px 28px; border-radius: 30px; font-weight: 700; text-decoration: none; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0, 168, 150, 0.35);">
-                        <i class="fa-solid fa-credit-card"></i> Pay via Online Payment Link &rarr;
-                    </a>
-                </div>
-
-                <div style="background: #ffffff; padding: 18px; border-radius: 16px; text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.3); border: 2px solid #00A896;">
-                    <img src="{{ asset('images/payment_qr_final.png') }}" alt="Official Payment QR Code" style="width: 170px; height: 170px; object-fit: contain; display: block; margin: 0 auto 10px auto;" onerror="this.src='{{ asset('images/stall_booking/payment_qr.png') }}'">
-                    <div style="color: #0a192f; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.5px;">SCAN WITH ANY UPI APP</div>
-                    <div style="color: #64748b; font-size: 0.75rem; margin-top: 4px;">GPay &bull; PhonePe &bull; Paytm</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Contact Support CTA -->
-        <div style="background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 30px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-            <h4 style="font-size: 1.3rem; font-weight: 800; color: #0f172a; margin: 0 0 8px 0;">
-                Interested in Custom Exhibition Space or Sponsorship?
-            </h4>
-            <p style="color: #64748b; font-size: 0.95rem; margin: 0 0 20px 0;">
-                Reach out to our organizing committee for customized branding, exhibition stalls, and industry partnership packages.
-            </p>
-            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                <a href="{{ route('contact') }}" style="background: linear-gradient(135deg, #00A896, #028090); color: #ffffff; padding: 12px 30px; border-radius: 30px; font-weight: 700; text-decoration: none; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-envelope"></i> Contact Organizing Committee
-                </a>
-                <a href="{{ url('/') }}" class="btn-action btn-zoom">
-                    <i class="fa-solid fa-house"></i> Home Page
+                <button type="button" onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" class="btn-action btn-zoom">
+                    View Full Resolution (HD Zoom)
+                </button>
+                <a href="{{ $imgSrc }}" download class="btn-action btn-download">
+                    Download Brochure
                 </a>
             </div>
         </div>
@@ -301,25 +199,24 @@
 <div id="hdLightboxModal" style="display: none; position: fixed; inset: 0; background: rgba(10, 25, 47, 0.95); z-index: 99999; backdrop-filter: blur(8px); flex-direction: column; justify-content: space-between; align-items: center; padding: 20px;">
     <!-- Top Bar -->
     <div style="width: 100%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; color: #ffffff; padding: 10px 0;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <i class="fa-solid fa-file-image" style="color: #00A896; font-size: 1.3rem;"></i>
+        <div>
             <h4 id="hdLightboxTitle" style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #ffffff;">Brochure Full HD Resolution</h4>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <button type="button" onclick="zoomLightbox(0.2)" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25); width: 38px; height: 38px; border-radius: 8px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Zoom In (+)">
-                <i class="fa-solid fa-magnifying-glass-plus"></i>
+            <button type="button" onclick="zoomLightbox(0.2)" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25); width: 38px; height: 38px; border-radius: 8px; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Zoom In (+)">
+                +
             </button>
-            <button type="button" onclick="zoomLightbox(-0.2)" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25); width: 38px; height: 38px; border-radius: 8px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Zoom Out (-)">
-                <i class="fa-solid fa-magnifying-glass-minus"></i>
+            <button type="button" onclick="zoomLightbox(-0.2)" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25); width: 38px; height: 38px; border-radius: 8px; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Zoom Out (-)">
+                &minus;
             </button>
             <button type="button" onclick="resetLightboxZoom()" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25); padding: 0 14px; height: 38px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;" title="Reset Zoom">
                 100% Reset
             </button>
-            <a id="hdLightboxDownload" href="#" download style="background: #00A896; color: #fff; text-decoration: none; padding: 0 16px; height: 38px; border-radius: 8px; font-size: 0.88rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-download"></i> Download
+            <a id="hdLightboxDownload" href="#" download style="background: #00A896; color: #fff; text-decoration: none; padding: 0 16px; height: 38px; border-radius: 8px; font-size: 0.88rem; font-weight: 700; display: inline-flex; align-items: center;">
+                Download
             </a>
-            <button type="button" onclick="closeLightboxModal()" style="background: #ef4444; color: #fff; border: none; width: 38px; height: 38px; border-radius: 8px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Close (Esc)">
-                <i class="fa-solid fa-xmark"></i>
+            <button type="button" onclick="closeLightboxModal()" style="background: #ef4444; color: #fff; border: none; width: 38px; height: 38px; border-radius: 8px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Close (Esc)">
+                &times;
             </button>
         </div>
     </div>
