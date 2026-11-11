@@ -534,6 +534,13 @@ Route::post('/awards/apply', function (\Illuminate\Http\Request $request) {
     $extension = $file->getClientOriginalExtension();
     $filename = time() . '_' . $awardNameClean . '.' . $extension;
     
+    // Ensure upload directory exists and is writable
+    $awardDir = storage_path('app/public/award_applications');
+    if (!file_exists($awardDir)) {
+        @mkdir($awardDir, 0777, true);
+    }
+    @chmod($awardDir, 0777);
+
     // Store in storage/app/public/award_applications
     $path = $file->storeAs('award_applications', $filename, 'public');
     
@@ -555,9 +562,17 @@ Route::get('/pre-conference', function () {
 Route::get('/mcc-memorial', function () {
     $settings = \App\Models\SiteSetting::where('group', 'mcc_memorial')->pluck('value', 'key')->toArray();
     $images = [];
-    $files = glob(public_path('images/mcc_memorial_*.*'));
+    $seen = [];
+    $files = array_merge(
+        glob(public_path('images/mcc_memorial_*.*')) ?: [],
+        glob(storage_path('app/public/images/mcc_memorial_*.*')) ?: []
+    );
     foreach ($files as $file) {
-        $images[] = asset('images/' . basename($file));
+        $base = basename($file);
+        if (!isset($seen[$base])) {
+            $seen[$base] = true;
+            $images[] = asset('images/' . $base);
+        }
     }
     usort($images, function($a, $b) {
         preg_match('/mcc_memorial_(\d+)/', $a, $matchA);
@@ -672,6 +687,14 @@ Route::get('/git-pull', function () {
             storage_path('app/public/images'),
             storage_path('app/public/images/stall_booking'),
             storage_path('app/public/images/sponsors'),
+            storage_path('app/public/images/settings'),
+            storage_path('app/public/images/speakers'),
+            storage_path('app/public/images/venue'),
+            storage_path('app/public/images/event'),
+            storage_path('app/public/abstracts'),
+            storage_path('app/public/id_cards'),
+            storage_path('app/public/receipts'),
+            storage_path('app/public/award_applications'),
             storage_path('framework/views'),
             storage_path('framework/cache'),
             storage_path('framework/sessions'),

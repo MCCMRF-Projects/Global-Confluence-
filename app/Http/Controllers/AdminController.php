@@ -518,10 +518,7 @@ class AdminController extends Controller
         $data = $request->except('_token');
         foreach ($data as $key => $value) {
             if ($request->hasFile($key)) {
-                $file = $request->file($key);
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images/settings'), $fileName);
-                $value = 'images/settings/' . $fileName;
+                $value = $this->safeUploadImage($request->file($key), 'images/settings');
             } elseif ($value === null && SiteSetting::where('key', $key)->value('type') === 'image') {
                 continue;
             }
@@ -697,10 +694,8 @@ class AdminController extends Controller
             if (str_ends_with($key, '_file')) {
                 if ($request->hasFile($key)) {
                     $originalKey = str_replace('_file', '', $key);
-                    $file = $request->file($key);
-                    $fileName = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('images/settings'), $fileName);
-                    SiteSetting::where('key', $originalKey)->update(['value' => 'images/settings/' . $fileName]);
+                    $path = $this->safeUploadImage($request->file($key), 'images/settings');
+                    SiteSetting::where('key', $originalKey)->update(['value' => $path]);
                 }
                 continue;
             }
@@ -730,12 +725,10 @@ class AdminController extends Controller
             if (str_ends_with($key, '_file')) {
                 if ($request->hasFile($key)) {
                     $originalKey = str_replace('_file', '', $key);
-                    $file = $request->file($key);
-                    $fileName = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('images/venue'), $fileName);
+                    $path = $this->safeUploadImage($request->file($key), 'images/venue');
                     SiteSetting::updateOrCreate(
                         ['key' => $originalKey, 'group' => 'venue'],
-                        ['value' => 'images/venue/' . $fileName]
+                        ['value' => $path]
                     );
                 }
                 continue;
@@ -926,10 +919,7 @@ class AdminController extends Controller
         $settings = $request->except(['_token']);
         foreach ($settings as $key => $value) {
             if ($request->hasFile($key)) {
-                $file = $request->file($key);
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images/settings'), $fileName);
-                $value = 'images/settings/' . $fileName;
+                $value = $this->safeUploadImage($request->file($key), 'images/settings');
             } elseif ($value === null && SiteSetting::where('key', $key)->value('type') === 'image') {
                 continue;
             } elseif ($value === null && SiteSetting::where('key', $key)->value('type') === 'file') {
@@ -964,10 +954,7 @@ class AdminController extends Controller
         $settings = $request->except(['_token']);
         foreach ($settings as $key => $value) {
             if ($request->hasFile($key)) {
-                $file = $request->file($key);
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images/settings'), $fileName);
-                $value = 'images/settings/' . $fileName;
+                $value = $this->safeUploadImage($request->file($key), 'images/settings');
             } elseif ($value === null && SiteSetting::where('key', $key)->value('type') === 'image') {
                 continue;
             }
@@ -1069,9 +1056,7 @@ class AdminController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            $imageName = time().'.'.$request->image->extension();  
-            $request->image->move(public_path('images/speakers'), $imageName);
-            $data['image_path'] = 'images/speakers/' . $imageName;
+            $data['image_path'] = $this->safeUploadImage($request->file('image'), 'images/speakers');
         } else {
             $data['image_path'] = null;
         }
@@ -1104,9 +1089,7 @@ class AdminController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            $imageName = time().'.'.$request->image->extension();  
-            $request->image->move(public_path('images/speakers'), $imageName);
-            $data['image_path'] = 'images/speakers/' . $imageName;
+            $data['image_path'] = $this->safeUploadImage($request->file('image'), 'images/speakers');
         }
 
         $speaker->update($data);
@@ -1137,10 +1120,8 @@ class AdminController extends Controller
             if (str_ends_with($key, '_file')) {
                 if ($request->hasFile($key)) {
                     $originalKey = str_replace('_file', '', $key);
-                    $file = $request->file($key);
-                    $fileName = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('images/settings'), $fileName);
-                    \App\Models\SiteSetting::updateOrCreate(['key' => $originalKey, 'group' => 'topics'], ['value' => 'images/settings/' . $fileName]);
+                    $path = $this->safeUploadImage($request->file($key), 'images/settings');
+                    \App\Models\SiteSetting::updateOrCreate(['key' => $originalKey, 'group' => 'topics'], ['value' => $path]);
                 }
                 continue;
             }
@@ -1199,10 +1180,8 @@ class AdminController extends Controller
             if (str_ends_with($key, '_file')) {
                 if ($request->hasFile($key)) {
                     $originalKey = str_replace('_file', '', $key);
-                    $file = $request->file($key);
-                    $fileName = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('images/settings'), $fileName);
-                    \App\Models\SiteSetting::updateOrCreate(['key' => $originalKey, 'group' => 'highlights'], ['value' => 'images/settings/' . $fileName]);
+                    $path = $this->safeUploadImage($request->file($key), 'images/settings');
+                    \App\Models\SiteSetting::updateOrCreate(['key' => $originalKey, 'group' => 'highlights'], ['value' => $path]);
                 }
                 continue;
             }
@@ -1549,12 +1528,10 @@ class AdminController extends Controller
             if (str_ends_with($key, '_file')) {
                 if ($request->hasFile($key)) {
                     $originalKey = str_replace('_file', '', $key);
-                    $file = $request->file($key);
-                    $fileName = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('images/event'), $fileName);
+                    $path = $this->safeUploadImage($request->file($key), 'images/event');
                     \App\Models\SiteSetting::updateOrCreate(
                         ['key' => $originalKey],
-                        ['value' => 'images/event/' . $fileName, 'group' => 'venue']
+                        ['value' => $path, 'group' => 'venue']
                     );
                 }
                 continue;
@@ -1637,13 +1614,21 @@ class AdminController extends Controller
     {
         $settings = \App\Models\SiteSetting::where('group', 'mcc_memorial')->get();
         $images = [];
-        $files = glob(public_path('images/mcc_memorial_*.*'));
+        $files = array_merge(
+            glob(public_path('images/mcc_memorial_*.*')) ?: [],
+            glob(storage_path('app/public/images/mcc_memorial_*.*')) ?: []
+        );
+        $seen = [];
         foreach ($files as $file) {
-            $images[] = [
-                'name' => basename($file),
-                'url' => asset('images/' . basename($file)),
-                'path' => $file
-            ];
+            $base = basename($file);
+            if (!isset($seen[$base])) {
+                $seen[$base] = true;
+                $images[] = [
+                    'name' => $base,
+                    'url' => asset('images/' . $base),
+                    'path' => $file
+                ];
+            }
         }
         usort($images, function($a, $b) {
             preg_match('/mcc_memorial_(\d+)/', $a['name'], $matchA);
@@ -1661,10 +1646,7 @@ class AdminController extends Controller
         $settings = $request->except(['_token']);
         foreach ($settings as $key => $value) {
             if ($request->hasFile($key)) {
-                $file = $request->file($key);
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('images'), $fileName);
-                $value = 'images/' . $fileName;
+                $value = $this->safeUploadImage($request->file($key), 'images');
             }
             \App\Models\SiteSetting::updateOrCreate(
                 ['key' => $key],
@@ -1681,7 +1663,10 @@ class AdminController extends Controller
             'gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:10240'
         ]);
 
-        $files = glob(public_path('images/mcc_memorial_*.*'));
+        $files = array_merge(
+            glob(public_path('images/mcc_memorial_*.*')) ?: [],
+            glob(storage_path('app/public/images/mcc_memorial_*.*')) ?: []
+        );
         $maxNum = 0;
         foreach ($files as $f) {
             if (preg_match('/mcc_memorial_(\d+)/', basename($f), $m)) {
@@ -1695,7 +1680,7 @@ class AdminController extends Controller
                 $maxNum++;
                 $ext = $file->getClientOriginalExtension();
                 $filename = 'mcc_memorial_' . $maxNum . '.' . $ext;
-                $file->move(public_path('images'), $filename);
+                $this->safeUploadImage($file, 'images', $filename);
             }
         }
 
@@ -1709,6 +1694,10 @@ class AdminController extends Controller
             $filePath = public_path('images/' . $filename);
             if (file_exists($filePath)) {
                 @unlink($filePath);
+            }
+            $storagePath = storage_path('app/public/images/' . $filename);
+            if (file_exists($storagePath)) {
+                @unlink($storagePath);
             }
         }
 
@@ -1731,8 +1720,7 @@ class AdminController extends Controller
         $settings = $request->except(['_token']);
         foreach ($settings as $key => $value) {
             if ($request->hasFile($key)) {
-                $path = $request->file($key)->store('public/settings');
-                $value = str_replace('public/', 'storage/', $path);
+                $value = $this->safeUploadImage($request->file($key), 'images/settings');
             }
             \App\Models\SiteSetting::updateOrCreate(
                 ['key' => $key],
@@ -2068,37 +2056,53 @@ class AdminController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    private function safeUploadImage($file, $subfolder = 'images')
+    private function safeUploadImage($file, $subfolder = 'images', $customFilename = null)
     {
-        $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
+        $filename = $customFilename ?: (time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName()));
         $cleanSub = trim($subfolder, '/');
         $primaryDir = public_path($cleanSub);
+        $storageDir = storage_path('app/public/' . $cleanSub);
 
+        // Ensure directories exist with 0777
         if (!file_exists($primaryDir)) {
             @mkdir($primaryDir, 0777, true);
         }
         @chmod($primaryDir, 0777);
 
-        if (is_writable($primaryDir)) {
-            try {
-                $file->move($primaryDir, $filename);
-                @chmod($primaryDir . '/' . $filename, 0666);
-                return $cleanSub . '/' . $filename;
-            } catch (\Throwable $e) {
-                // proceed to fallback
-            }
-        }
-
-        // Fallback: storage/app/public
-        $storageDir = storage_path('app/public/' . $cleanSub);
         if (!file_exists($storageDir)) {
             @mkdir($storageDir, 0777, true);
         }
         @chmod($storageDir, 0777);
 
-        $file->move($storageDir, $filename);
-        @chmod($storageDir . '/' . $filename, 0666);
-        @copy($storageDir . '/' . $filename, $primaryDir . '/' . $filename);
+        // Test if primaryDir is actually writable
+        $primaryWritable = false;
+        if (file_exists($primaryDir) && is_dir($primaryDir)) {
+            $testFile = $primaryDir . '/.perm_test_' . uniqid();
+            if (@file_put_contents($testFile, '1') !== false) {
+                @unlink($testFile);
+                $primaryWritable = true;
+            }
+        }
+
+        if ($primaryWritable) {
+            try {
+                $file->move($primaryDir, $filename);
+                @chmod($primaryDir . '/' . $filename, 0666);
+                return $cleanSub . '/' . $filename;
+            } catch (\Throwable $e) {
+                // If moving to primary still fails, proceed to storage fallback
+            }
+        }
+
+        // Fallback: move to storage/app/public/...
+        try {
+            $file->move($storageDir, $filename);
+            @chmod($storageDir . '/' . $filename, 0666);
+            // Also attempt to copy to primaryDir if permissions permit
+            @copy($storageDir . '/' . $filename, $primaryDir . '/' . $filename);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('safeUploadImage failed: ' . $e->getMessage());
+        }
 
         return $cleanSub . '/' . $filename;
     }
@@ -2265,10 +2269,7 @@ class AdminController extends Controller
 
             $imgPath = $existingImages[$idx] ?? 'images/marina_beach.jpg';
             if (isset($uploadedImages[$idx]) && $uploadedImages[$idx]->isValid()) {
-                $file = $uploadedImages[$idx];
-                $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
-                $file->move(public_path('images'), $filename);
-                $imgPath = 'images/' . $filename;
+                $imgPath = $this->safeUploadImage($uploadedImages[$idx], 'images');
             }
 
             $places[] = [
@@ -2282,10 +2283,7 @@ class AdminController extends Controller
         if ($request->filled('new_place_title')) {
             $newImgPath = 'images/marina_beach.jpg';
             if ($request->hasFile('new_place_image') && $request->file('new_place_image')->isValid()) {
-                $file = $request->file('new_place_image');
-                $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
-                $file->move(public_path('images'), $filename);
-                $newImgPath = 'images/' . $filename;
+                $newImgPath = $this->safeUploadImage($request->file('new_place_image'), 'images');
             }
             $places[] = [
                 'title' => trim($request->input('new_place_title')),

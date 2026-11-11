@@ -41,6 +41,15 @@ class RegistrationController extends Controller
         // Save the dynamic fields as JSON
         $fieldsData = $request->input('fields', []);
 
+        // Ensure upload directories exist and are writable
+        foreach (['abstracts', 'id_cards', 'receipts'] as $folder) {
+            $dir = storage_path('app/public/' . $folder);
+            if (!file_exists($dir)) {
+                @mkdir($dir, 0777, true);
+            }
+            @chmod($dir, 0777);
+        }
+
         // Handle abstract file upload with original filename preservation
         if ($request->hasFile('abstract_file')) {
             $file = $request->file('abstract_file');

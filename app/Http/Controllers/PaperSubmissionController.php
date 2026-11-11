@@ -46,6 +46,11 @@ class PaperSubmissionController extends Controller
             // Store the file temporarily
             $file = $request->file('abstract_file');
             $originalName = $file->getClientOriginalName();
+            $destDir = storage_path('app/public/abstracts');
+            if (!file_exists($destDir)) {
+                @mkdir($destDir, 0777, true);
+            }
+            @chmod($destDir, 0777);
             $path = $file->storeAs('abstracts', time() . '_' . $originalName, 'public');
             $absolutePath = storage_path('app/public/' . $path);
 
