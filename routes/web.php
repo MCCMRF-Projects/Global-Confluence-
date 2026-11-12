@@ -8,7 +8,7 @@ use App\Http\Controllers\PaperSubmissionController;
 use App\Http\Controllers\RegistrationController;
 
 Route::get('/storage-file/{path}', function ($path) {
-    $cleanPath = ltrim(str_replace(['public/', 'storage/'], '', $path), '/');
+    $cleanPath = ltrim(str_replace(['public/', 'storage/', '../', '..\\'], '', $path), '/');
     $decodedPath = urldecode($cleanPath);
     
     $candidates = [
@@ -54,36 +54,82 @@ Route::get('/storage-file/{path}', function ($path) {
     return response()->file($filePath, [
         'Content-Type' => $mimeType,
         'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"',
-        'Cache-Control' => 'public, max-age=86400',
+        'Cache-Control' => 'public, max-age=31536000, immutable',
     ]);
-})->where('path', '.*')->name('storage.file');
+})->where('path', '.*')->name('storage.file')->withoutMiddleware([
+    \Illuminate\Cookie\Middleware\EncryptCookies::class,
+    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+    \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+]);
 
 Route::get('/images/{path}', function ($path) {
-    $cleanPath = ltrim($path, '/');
+    $cleanPath = ltrim(str_replace(['../', '..\\'], '', $path), '/');
+    $decodedPath = urldecode($cleanPath);
     $candidates = [
         public_path('images/' . $cleanPath),
+        public_path('images/' . $decodedPath),
+        base_path('../public_html/images/' . $cleanPath),
+        base_path('../public_html/images/' . $decodedPath),
+        public_path($cleanPath),
+        public_path($decodedPath),
         storage_path('app/public/images/' . $cleanPath),
+        storage_path('app/public/images/' . $decodedPath),
         storage_path('app/public/' . $cleanPath),
+        storage_path('app/public/' . $decodedPath),
         storage_path('app/' . $cleanPath),
     ];
+
+    $filePath = null;
     foreach ($candidates as $cand) {
         if (!empty($cand) && file_exists($cand) && !is_dir($cand)) {
-            $extension = strtolower(pathinfo($cand, PATHINFO_EXTENSION));
-            $mimeTypes = [
-                'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png',
-                'gif' => 'image/gif', 'webp' => 'image/webp', 'svg' => 'image/svg+xml',
-                'pdf' => 'application/pdf',
-            ];
-            $mimeType = $mimeTypes[$extension] ?? (\Illuminate\Support\Facades\File::mimeType($cand) ?: 'application/octet-stream');
-            return response()->file($cand, [
-                'Content-Type' => $mimeType,
-                'Content-Disposition' => 'inline; filename="' . basename($cand) . '"',
-                'Cache-Control' => 'public, max-age=86400',
-            ]);
+            $filePath = $cand;
+            break;
         }
     }
-    abort(404);
-})->where('path', '.*');
+
+    if (!$filePath) {
+        // Fallback for stall booking images if specific file is missing
+        if (str_contains($cleanPath, 'stall_booking') || str_contains($cleanPath, 'brochure')) {
+            $fallbacks = [
+                public_path('images/stall_booking/stall_brochure_1.jpg'),
+                public_path('images/stall_booking/stall_brochure_1.png'),
+                base_path('../public_html/images/stall_booking/stall_brochure_1.jpg'),
+                base_path('../public_html/images/stall_booking/stall_brochure_1.png'),
+            ];
+            foreach ($fallbacks as $fb) {
+                if (file_exists($fb)) {
+                    $filePath = $fb;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!$filePath) {
+        abort(404);
+    }
+
+    $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+    $mimeTypes = [
+        'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png',
+        'gif' => 'image/gif', 'webp' => 'image/webp', 'svg' => 'image/svg+xml',
+        'pdf' => 'application/pdf',
+    ];
+    $mimeType = $mimeTypes[$extension] ?? (\Illuminate\Support\Facades\File::mimeType($filePath) ?: 'application/octet-stream');
+    return response()->file($filePath, [
+        'Content-Type' => $mimeType,
+        'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"',
+        'Cache-Control' => 'public, max-age=31536000, immutable',
+    ]);
+})->where('path', '.*')->withoutMiddleware([
+    \Illuminate\Cookie\Middleware\EncryptCookies::class,
+    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+    \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+]);
 
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 Route::get('/page/{slug}', [FrontendController::class, 'customPage'])->name('custom.page');
@@ -715,6 +761,24 @@ Route::get('/git-pull', function () {
                 @mkdir($dir, 0777, true);
             }
             @chmod($dir, 0777);
+        }
+
+        // Sync images to ../public_html/images/stall_booking if public_html exists
+        $publicHtml = base_path('../public_html');
+        if (file_exists($publicHtml) && is_dir($publicHtml)) {
+            $srcStall = public_path('images/stall_booking');
+            $dstStall = $publicHtml . '/images/stall_booking';
+            if (!file_exists($dstStall)) {
+                @mkdir($dstStall, 0777, true);
+            }
+            if (file_exists($srcStall) && is_dir($srcStall)) {
+                $files = @scandir($srcStall) ?: [];
+                foreach ($files as $f) {
+                    if ($f !== '.' && $f !== '..' && is_file($srcStall . '/' . $f)) {
+                        @copy($srcStall . '/' . $f, $dstStall . '/' . $f);
+                    }
+                }
+            }
         }
 
         return "<div style='font-family: sans-serif; padding: 30px; max-width: 650px; margin: 30px auto; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px;'>

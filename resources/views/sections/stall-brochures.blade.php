@@ -130,18 +130,20 @@
                 width: 100%;
                 border-radius: 10px;
                 overflow: hidden;
-                background: #ffffff;
+                background: #f8fafc;
                 border: 1px solid #e2e8f0;
                 position: relative;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 box-shadow: none !important;
+                aspect-ratio: 1 / 1.414;
+                min-height: 380px;
             }
 
             .brochure-main-img {
                 width: 100%;
-                height: auto;
+                height: 100%;
                 object-fit: contain;
                 image-rendering: -webkit-optimize-contrast;
                 image-rendering: high-quality;
@@ -205,6 +207,9 @@
             }
 
             @media (max-width: 640px) {
+                .brochure-img-frame {
+                    min-height: 280px;
+                }
                 .brochure-prev-btn {
                     left: -6px;
                     width: 38px;
@@ -232,14 +237,32 @@
             <div id="brochuresTrack" class="brochures-track">
                 @foreach($homeBrochures as $index => $b)
                     @php
-                        $imgSrc = asset($b['image'] ?? 'images/stall_booking/stall_brochure_1.png');
+                        $rawPath = $b['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+                        if (str_starts_with($rawPath, 'http://')) {
+                            $imgSrc = 'https://' . substr($rawPath, 7);
+                        } elseif (str_starts_with($rawPath, 'https://')) {
+                            $imgSrc = $rawPath;
+                        } else {
+                            $imgSrc = asset(ltrim($rawPath, '/'));
+                            if (!app()->environment('local') && str_starts_with($imgSrc, 'http://')) {
+                                $imgSrc = 'https://' . substr($imgSrc, 7);
+                            }
+                        }
                         $bTitle = $b['title'] ?? 'Conference Brochure';
                         $targetUrl = !empty($b['url']) ? (str_starts_with($b['url'], 'http') ? $b['url'] : url($b['url'])) : $stallPageUrl;
+                        $fallbackUrl = asset('images/stall_booking/stall_brochure_1.png');
+                        if (!app()->environment('local') && str_starts_with($fallbackUrl, 'http://')) {
+                            $fallbackUrl = 'https://' . substr($fallbackUrl, 7);
+                        }
                     @endphp
                     <div class="brochure-slide-item">
                         <a href="{{ $targetUrl }}" class="brochure-img-card" title="{{ $bTitle }}">
                             <div class="brochure-img-frame">
-                                <img src="{{ $imgSrc }}" alt="{{ $bTitle }}" class="brochure-main-img" loading="lazy">
+                                <img src="{{ $imgSrc }}" 
+                                     alt="{{ $bTitle }}" 
+                                     class="brochure-main-img" 
+                                     loading="lazy"
+                                     onerror="if(this.src!=='{{ $fallbackUrl }}'){ this.onerror=null; this.src='{{ $fallbackUrl }}'; }">
                             </div>
                         </a>
                     </div>

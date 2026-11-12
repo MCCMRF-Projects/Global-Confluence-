@@ -169,12 +169,31 @@
                 if ($rawImg === 'images/stall_booking/stall_brochure_1.jpg' && file_exists(public_path('images/stall_booking/stall_brochure_1.png'))) {
                     $rawImg = 'images/stall_booking/stall_brochure_1.png';
                 }
-                $imgSrc = asset($rawImg);
+                if (str_starts_with($rawImg, 'http://')) {
+                    $imgSrc = 'https://' . substr($rawImg, 7);
+                } elseif (str_starts_with($rawImg, 'https://')) {
+                    $imgSrc = $rawImg;
+                } else {
+                    $imgSrc = asset(ltrim($rawImg, '/'));
+                    if (!app()->environment('local') && str_starts_with($imgSrc, 'http://')) {
+                        $imgSrc = 'https://' . substr($imgSrc, 7);
+                    }
+                }
                 $bTitle = $brochure['title'] ?? 'Brochure ' . ($index + 1);
+                $fallbackImg = asset('images/stall_booking/stall_brochure_1.png');
+                if (!app()->environment('local') && str_starts_with($fallbackImg, 'http://')) {
+                    $fallbackImg = 'https://' . substr($fallbackImg, 7);
+                }
             @endphp
             <div class="details-brochure-card">
                 <!-- High Quality Brochure Image -->
-                <img src="{{ $imgSrc }}" alt="{{ $bTitle }}" class="details-brochure-img" loading="lazy" onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" title="Click to open Full Resolution Zoom">
+                <img src="{{ $imgSrc }}" 
+                     alt="{{ $bTitle }}" 
+                     class="details-brochure-img" 
+                     loading="lazy" 
+                     onerror="if(this.src!=='{{ $fallbackImg }}'){ this.onerror=null; this.src='{{ $fallbackImg }}'; }"
+                     onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" 
+                     title="Click to open Full Resolution Zoom">
 
                 <!-- Action Bar -->
                 <div class="details-brochure-actions">
