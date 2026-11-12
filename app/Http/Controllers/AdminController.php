@@ -2096,6 +2096,16 @@ class AdminController extends Controller
             try {
                 $file->move($primaryDir, $filename);
                 @chmod($primaryDir . '/' . $filename, 0666);
+
+                // Also sync to ../public_html if running on cPanel structure
+                $publicHtmlDir = base_path('../public_html/' . $cleanSub);
+                if (file_exists(base_path('../public_html')) && is_dir(base_path('../public_html'))) {
+                    if (!file_exists($publicHtmlDir)) {
+                        @mkdir($publicHtmlDir, 0777, true);
+                    }
+                    @copy($primaryDir . '/' . $filename, $publicHtmlDir . '/' . $filename);
+                }
+
                 return $cleanSub . '/' . $filename;
             } catch (\Throwable $e) {
                 // If moving to primary still fails, proceed to storage fallback
@@ -2108,6 +2118,15 @@ class AdminController extends Controller
             @chmod($storageDir . '/' . $filename, 0666);
             // Also attempt to copy to primaryDir if permissions permit
             @copy($storageDir . '/' . $filename, $primaryDir . '/' . $filename);
+
+            // Also sync to ../public_html if present
+            $publicHtmlDir = base_path('../public_html/' . $cleanSub);
+            if (file_exists(base_path('../public_html')) && is_dir(base_path('../public_html'))) {
+                if (!file_exists($publicHtmlDir)) {
+                    @mkdir($publicHtmlDir, 0777, true);
+                }
+                @copy($storageDir . '/' . $filename, $publicHtmlDir . '/' . $filename);
+            }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('safeUploadImage failed: ' . $e->getMessage());
         }

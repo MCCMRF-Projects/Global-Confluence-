@@ -146,7 +146,7 @@
             @foreach($homeBrochures as $idx => $hb)
                 <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 8px; text-align: center;">
                     <a href="{{ asset($hb['image']) }}" target="_blank" title="Click to view full HD">
-                        <img src="{{ asset($hb['image']) }}" alt="{{ $hb['title'] }}" style="width: 100%; height: auto; max-height: 260px; object-fit: contain; border-radius: 8px; border: 1px solid #f1f5f9; display: block; image-rendering: -webkit-optimize-contrast;">
+                        <img src="{{ asset($hb['image']) }}" alt="{{ $hb['title'] }}" onerror="this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}';" style="width: 100%; height: auto; max-height: 260px; object-fit: contain; border-radius: 8px; border: 1px solid #f1f5f9; display: block; image-rendering: -webkit-optimize-contrast;">
                     </a>
                     <div style="margin-top: 8px; font-size: 0.78rem; font-weight: 700; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $hb['title'] }}</div>
                 </div>
@@ -217,7 +217,7 @@
                                 <label class="form-label">Current Image (HD)</label>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <a href="{{ asset($hb['image']) }}" target="_blank" title="View Full HD" style="display: inline-block;">
-                                        <img src="{{ asset($hb['image']) }}" alt="{{ $hb['title'] }}" id="home_brochure_preview_img_{{ $idx }}" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px; image-rendering: -webkit-optimize-contrast;">
+                                        <img src="{{ asset($hb['image']) }}" alt="{{ $hb['title'] }}" id="home_brochure_preview_img_{{ $idx }}" onerror="this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}';" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px; image-rendering: -webkit-optimize-contrast;">
                                     </a>
                                     <input type="hidden" name="home_brochure_existing_images[]" value="{{ $hb['image'] }}">
                                 </div>

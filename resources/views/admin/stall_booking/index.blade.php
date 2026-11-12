@@ -162,7 +162,7 @@
                 @foreach($brochureList as $idx => $b)
                     <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-align: center;">
                         <a href="{{ asset($b['image']) }}" target="_blank" title="Click to view full resolution HD image" style="display: block; text-decoration: none;">
-                            <img src="{{ asset($b['image']) }}" alt="{{ $b['title'] }}" style="width: 100%; max-height: 200px; object-fit: contain; background: #f8fafc; border-radius: 6px; margin-bottom: 8px; image-rendering: -webkit-optimize-contrast; border: 1px solid #e2e8f0; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                            <img src="{{ asset($b['image']) }}" alt="{{ $b['title'] }}" onerror="this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}';" style="width: 100%; max-height: 200px; object-fit: contain; background: #f8fafc; border-radius: 6px; margin-bottom: 8px; image-rendering: -webkit-optimize-contrast; border: 1px solid #e2e8f0; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                         </a>
                         <div style="font-size: 0.8rem; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $b['title'] }}</div>
                         <div style="font-size: 0.72rem; color: #00A896; margin-top: 4px; font-weight: 600;">Brochure #{{ $idx + 1 }} &bull; <a href="{{ asset($b['image']) }}" target="_blank" style="color: #0284c7; text-decoration: underline;">Full HD ↗</a></div>
@@ -289,7 +289,7 @@
                                 <label class="form-label">Current Preview (HD)</label>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <a href="{{ asset($hb['image']) }}" target="_blank" title="Click to view full resolution HD image" style="display: inline-block;">
-                                        <img src="{{ asset($hb['image']) }}" alt="{{ $hb['title'] }}" id="home_brochure_preview_img_{{ $idx }}" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px; image-rendering: -webkit-optimize-contrast;">
+                                        <img src="{{ asset($hb['image']) }}" alt="{{ $hb['title'] }}" id="home_brochure_preview_img_{{ $idx }}" onerror="this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}';" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px; image-rendering: -webkit-optimize-contrast;">
                                     </a>
                                     <input type="hidden" name="home_brochure_existing_images[]" value="{{ $hb['image'] }}">
                                 </div>
@@ -358,7 +358,7 @@
                                 <label class="form-label">Current Preview (HD)</label>
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     <a href="{{ asset($brochure['image']) }}" target="_blank" title="Click to view full resolution HD image" style="display: inline-block;">
-                                        <img src="{{ asset($brochure['image']) }}" alt="{{ $brochure['title'] }}" id="brochure_preview_img_{{ $index }}" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
+                                        <img src="{{ asset($brochure['image']) }}" alt="{{ $brochure['title'] }}" id="brochure_preview_img_{{ $index }}" onerror="this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}';" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
                                     </a>
                                     <div style="display: flex; flex-direction: column; gap: 4px;">
                                         <a href="{{ asset($brochure['image']) }}" target="_blank" style="font-size: 0.8rem; font-weight: 700; color: #0284c7; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
