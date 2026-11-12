@@ -29,3 +29,5 @@ Thumbs.db
 env
 Brochure Pic/
 *.zip
+/public/images/stall_booking/[0-9]*
+
