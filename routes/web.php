@@ -719,17 +719,23 @@ Route::get('/git-pull', function () {
     try {
         $output = [];
         $returnVar = 0;
-        @exec('git pull origin main 2>&1', $output, $returnVar);
         $gitLog = [];
-        @exec('git log -n 1 --oneline 2>&1', $gitLog);
+        if (function_exists('exec')) {
+            @exec('git pull origin main 2>&1', $output, $returnVar);
+            @exec('git log -n 1 --oneline 2>&1', $gitLog);
+        } else {
+            $output[] = "PHP exec() is disabled on this server. Please pull changes via cPanel Git Version Control or SSH terminal.";
+        }
         
         \Illuminate\Support\Facades\Artisan::call('view:clear');
         \Illuminate\Support\Facades\Artisan::call('cache:clear');
         \Illuminate\Support\Facades\Artisan::call('config:clear');
         \Illuminate\Support\Facades\Artisan::call('route:clear');
         
-        $seeder = new \Database\Seeders\PartnerLogoSeeder();
-        $seeder->run();
+        try {
+            $seeder = new \Database\Seeders\PartnerLogoSeeder();
+            $seeder->run();
+        } catch (\Throwable $se) {}
 
         // Ensure all media upload directories exist and are writable
         $uploadDirs = [
@@ -788,7 +794,7 @@ Route::get('/git-pull', function () {
             <p style='color: #166534;'>Caches cleared and PartnerLogos synchronized!</p>
             <a href='/' style='display: inline-block; background: #16a34a; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold;'>Visit Homepage</a>
         </div>";
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         return "Error: " . $e->getMessage();
     }
 });
