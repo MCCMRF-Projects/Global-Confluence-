@@ -32,7 +32,7 @@ Route::get('/storage-file/{path}', function ($path) {
         }
     }
 
-    if (!$filePath) {
+    if (!$filePath || !file_exists($filePath)) {
         abort(404, 'File not found');
     }
 
@@ -51,18 +51,17 @@ Route::get('/storage-file/{path}', function ($path) {
 
     $mimeType = $mimeTypes[$extension] ?? (\Illuminate\Support\Facades\File::mimeType($filePath) ?: 'application/octet-stream');
 
-    return response()->file($filePath, [
-        'Content-Type' => $mimeType,
-        'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"',
-        'Cache-Control' => 'public, max-age=31536000, immutable',
-    ]);
-})->where('path', '.*')->name('storage.file')->withoutMiddleware([
-    \Illuminate\Cookie\Middleware\EncryptCookies::class,
-    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-    \Illuminate\Session\Middleware\StartSession::class,
-    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-    \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
-]);
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+
+    header('Content-Type: ' . $mimeType);
+    header('Content-Disposition: inline; filename="' . basename($filePath) . '"');
+    header('Cache-Control: public, max-age=31536000, immutable');
+    header('Content-Length: ' . filesize($filePath));
+    readfile($filePath);
+    exit;
+})->where('path', '.*')->name('storage.file');
 
 Route::get('/images/{path}', function ($path) {
     $cleanPath = ltrim(str_replace(['../', '..\\'], '', $path), '/');
@@ -107,7 +106,7 @@ Route::get('/images/{path}', function ($path) {
         }
     }
 
-    if (!$filePath) {
+    if (!$filePath || !file_exists($filePath)) {
         abort(404);
     }
 
@@ -118,18 +117,18 @@ Route::get('/images/{path}', function ($path) {
         'pdf' => 'application/pdf',
     ];
     $mimeType = $mimeTypes[$extension] ?? (\Illuminate\Support\Facades\File::mimeType($filePath) ?: 'application/octet-stream');
-    return response()->file($filePath, [
-        'Content-Type' => $mimeType,
-        'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"',
-        'Cache-Control' => 'public, max-age=31536000, immutable',
-    ]);
-})->where('path', '.*')->withoutMiddleware([
-    \Illuminate\Cookie\Middleware\EncryptCookies::class,
-    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-    \Illuminate\Session\Middleware\StartSession::class,
-    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-    \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
-]);
+
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+
+    header('Content-Type: ' . $mimeType);
+    header('Content-Disposition: inline; filename="' . basename($filePath) . '"');
+    header('Cache-Control: public, max-age=31536000, immutable');
+    header('Content-Length: ' . filesize($filePath));
+    readfile($filePath);
+    exit;
+})->where('path', '.*');
 
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 Route::get('/page/{slug}', [FrontendController::class, 'customPage'])->name('custom.page');
