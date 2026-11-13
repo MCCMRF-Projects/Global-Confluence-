@@ -37,7 +37,7 @@
         $homeBrochures = [
             [
                 'title' => 'Global One Health Confluence 2026 Brochure',
-                'image' => 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png',
+                'image' => 'images/stall_booking/stall_brochure_1.png',
             ],
         ];
     }
@@ -158,7 +158,7 @@
         <!-- Official Conference Brochure (Master HD Quality) -->
         @foreach($homeBrochures as $index => $brochure)
             @php
-                $rawImg = $brochure['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
+                $rawImg = $brochure['image'] ?? 'images/stall_booking/stall_brochure_1.png';
                 if (str_starts_with($rawImg, 'http://')) {
                     $imgSrc = 'https://' . substr($rawImg, 7);
                 } elseif (str_starts_with($rawImg, 'https://')) {

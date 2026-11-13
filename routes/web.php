@@ -113,10 +113,10 @@ Route::get('/images/{path}', function ($path) {
         // Fallback for stall booking images to current valid user uploaded brochure
         if (str_contains($cleanPath, 'stall_booking') || str_contains($cleanPath, 'brochure')) {
             $fallbacks = [
-                storage_path('app/public/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png'),
-                public_path('images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png'),
-                storage_path('app/public/images/stall_booking/1794566359_zubair_innov.png'),
-                public_path('images/stall_booking/1794566359_zubair_innov.png'),
+                public_path('images/stall_booking/stall_brochure_1.png'),
+                public_path('images/stall_booking/stall_brochure_1.jpg'),
+                storage_path('app/public/images/stall_booking/stall_brochure_1.png'),
+                storage_path('app/public/images/stall_booking/stall_brochure_1.jpg'),
             ];
             foreach ($fallbacks as $fb) {
                 if (file_exists($fb)) {
@@ -710,24 +710,28 @@ Route::get('/sync-db-settings', function () {
         \App\Models\SiteSetting::updateOrCreate(['key' => 'hero_btn2_text'], ['value' => 'APPLY FOR AWARDS', 'group' => 'hero', 'type' => 'text', 'label' => 'Secondary Button Text']);
         \App\Models\SiteSetting::updateOrCreate(['key' => 'hero_btn2_link'], ['value' => '/awards', 'group' => 'hero', 'type' => 'text', 'label' => 'Secondary Button Link']);
 
-        // Set single official conference brochure for home section
+        // Set strictly single official conference brochure banner for home section
         \App\Models\SiteSetting::updateOrCreate(
             ['key' => 'stall_home_brochures_json', 'group' => 'stall_booking'],
             ['value' => json_encode([
                 [
                     'title' => 'Global One Health Confluence 2026 Brochure',
-                    'image' => 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png',
+                    'image' => 'images/stall_booking/stall_brochure_1.png',
                     'url' => '/page/stall-booking-details'
                 ]
             ])]
         );
 
-        // Purge old brochure banner files from server if they exist
-        foreach (['stall_brochure_1.png', 'stall_brochure_1.jpg', 'stall_brochure_2.png', 'stall_brochure_3.png', 'stall_brochure_4.png'] as $oldF) {
-            @unlink(public_path('images/stall_booking/' . $oldF));
-            @unlink(storage_path('app/public/images/stall_booking/' . $oldF));
-            @unlink(base_path('../public_html/images/stall_booking/' . $oldF));
-        }
+        // Also clean stall_brochures_json to strictly contain only the official brochure banner
+        \App\Models\SiteSetting::updateOrCreate(
+            ['key' => 'stall_brochures_json', 'group' => 'stall_booking'],
+            ['value' => json_encode([
+                [
+                    'title' => 'Global One Health Confluence 2026 Brochure',
+                    'image' => 'images/stall_booking/stall_brochure_1.png'
+                ]
+            ])]
+        );
 
         $seeder = new \Database\Seeders\SiteSettingSeeder();
         $seeder->run();
@@ -889,12 +893,6 @@ Route::get('/git-pull', function () {
             }
         }
 
-        // Purge old brochure banner files from server if they exist
-        foreach (['stall_brochure_1.png', 'stall_brochure_1.jpg', 'stall_brochure_2.png', 'stall_brochure_3.png', 'stall_brochure_4.png'] as $oldF) {
-            @unlink(public_path('images/stall_booking/' . $oldF));
-            @unlink(storage_path('app/public/images/stall_booking/' . $oldF));
-            @unlink(base_path('../public_html/images/stall_booking/' . $oldF));
-        }
 
         return "<div style='font-family: sans-serif; padding: 30px; max-width: 650px; margin: 30px auto; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px;'>
             <h2 style='color: #166534;'>Git Pull & Live Update</h2>

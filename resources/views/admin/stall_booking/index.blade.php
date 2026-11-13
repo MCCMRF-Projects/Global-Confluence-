@@ -158,7 +158,7 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px;">
                 @foreach($brochureList as $idx => $b)
                     @php
-                        $bRaw = $b['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
+                        $bRaw = $b['image'] ?? 'images/stall_booking/stall_brochure_1.png';
                         $cleanB = ltrim($bRaw, '/');
                         if (str_starts_with($cleanB, 'storage/')) {
                             $bImg = asset($cleanB);
@@ -296,7 +296,7 @@
                             <div>
                                 <label class="form-label">Current Preview (HD)</label>
                                 @php
-                                    $hbRaw = $hb['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
+                                    $hbRaw = $hb['image'] ?? 'images/stall_booking/stall_brochure_1.png';
                                     $cleanHb = ltrim($hbRaw, '/');
                                     if (str_starts_with($cleanHb, 'storage/')) {
                                         $hbImg = asset($cleanHb);
@@ -376,7 +376,7 @@
                             <div>
                                 <label class="form-label">Current Preview (HD)</label>
                                 @php
-                                    $bRaw2 = $brochure['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
+                                    $bRaw2 = $brochure['image'] ?? 'images/stall_booking/stall_brochure_1.png';
                                     $cleanB2 = ltrim($bRaw2, '/');
                                     if (str_starts_with($cleanB2, 'storage/')) {
                                         $bImg2 = asset($cleanB2);
@@ -559,8 +559,8 @@
                 <div>
                     <label class="form-label">Instant HD Preview</label>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <img id="${newImgId}" src="{{ asset('storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png') }}" alt="Preview" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
-                        <input type="hidden" name="brochure_existing_images[]" value="storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png">
+                        <img id="${newImgId}" src="{{ asset('images/stall_booking/stall_brochure_1.png') }}" alt="Preview" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
+                        <input type="hidden" name="brochure_existing_images[]" value="images/stall_booking/stall_brochure_1.png">
                     </div>
                 </div>
                 <div>
@@ -652,8 +652,8 @@
                 <div>
                     <label class="form-label">Instant HD Preview</label>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <img id="${newImgId}" src="{{ asset('storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png') }}" alt="Preview" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px;">
-                        <input type="hidden" name="home_brochure_existing_images[]" value="storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png">
+                        <img id="${newImgId}" src="{{ asset('images/stall_booking/stall_brochure_1.png') }}" alt="Preview" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px;">
+                        <input type="hidden" name="home_brochure_existing_images[]" value="images/stall_booking/stall_brochure_1.png">
                     </div>
                 </div>
                 <div>

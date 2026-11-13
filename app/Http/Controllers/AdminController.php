@@ -2152,7 +2152,7 @@ class AdminController extends Controller
             $homeBrochures = [
                 [
                     'title' => 'Global One Health Confluence 2026 Brochure',
-                    'image' => 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png',
+                    'image' => 'images/stall_booking/stall_brochure_1.png',
                     'url' => '/page/stall-booking-details',
                 ],
             ];
@@ -2327,7 +2327,7 @@ class AdminController extends Controller
             $homeBrochures = [
                 [
                     'title' => 'Global One Health Confluence 2026 Brochure',
-                    'image' => 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png',
+                    'image' => 'images/stall_booking/stall_brochure_1.png',
                     'url' => '/page/stall-booking-details',
                 ],
             ];

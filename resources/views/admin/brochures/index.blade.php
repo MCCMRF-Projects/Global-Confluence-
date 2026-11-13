@@ -139,7 +139,7 @@
         <div style="display: grid; grid-template-columns: repeat({{ count($homeBrochures) > 0 ? min(count($homeBrochures), 3) : 3 }}, 1fr); gap: 20px; max-width: 950px; margin: 0 auto 25px auto;">
             @foreach($homeBrochures as $idx => $hb)
                 @php
-                    $hbRaw = $hb['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
+                    $hbRaw = $hb['image'] ?? 'images/stall_booking/stall_brochure_1.png';
                     $cleanHb = ltrim($hbRaw, '/');
                     if (str_starts_with($cleanHb, 'storage/')) {
                         $hbImg = asset($cleanHb);
@@ -246,7 +246,7 @@
                             <div>
                                 <label class="form-label">Current Image (HD)</label>
                                 @php
-                                    $rowRaw = $hb['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
+                                    $rowRaw = $hb['image'] ?? 'images/stall_booking/stall_brochure_1.png';
                                     $cleanRow = ltrim($rowRaw, '/');
                                     if (str_starts_with($cleanRow, 'storage/')) {
                                         $rowImg = asset($cleanRow);
@@ -343,8 +343,8 @@
                 <div>
                     <label class="form-label">Instant HD Preview</label>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <img id="${newImgId}" src="{{ asset('storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png') }}" alt="Preview" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px;">
-                        <input type="hidden" name="home_brochure_existing_images[]" value="storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png">
+                        <img id="${newImgId}" src="{{ asset('images/stall_booking/stall_brochure_1.png') }}" alt="Preview" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px;">
+                        <input type="hidden" name="home_brochure_existing_images[]" value="images/stall_booking/stall_brochure_1.png">
                     </div>
                 </div>
                 <div>

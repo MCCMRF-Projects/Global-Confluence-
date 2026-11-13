@@ -27,7 +27,7 @@
         $homeBrochures = [
             [
                 'title' => 'Global One Health Confluence 2026 Brochure',
-                'image' => 'storage/images/stall_booking/1794561509_zubair_innov.png',
+                'image' => 'images/stall_booking/stall_brochure_1.png',
                 'url' => $stallPageUrl,
             ],
         ];
@@ -232,7 +232,7 @@
             <div id="brochuresTrack" class="brochures-track" style="{{ count($homeBrochures) === 1 ? 'justify-content: center;' : '' }}">
                 @foreach($homeBrochures as $index => $b)
                     @php
-                        $rawPath = $b['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
+                        $rawPath = $b['image'] ?? 'images/stall_booking/stall_brochure_1.png';
                         if (str_starts_with($rawPath, 'http://')) {
                             $imgSrc = 'https://' . substr($rawPath, 7);
                         } elseif (str_starts_with($rawPath, 'https://')) {
