@@ -2097,6 +2097,10 @@ class AdminController extends Controller
                 $file->move($primaryDir, $filename);
                 @chmod($primaryDir . '/' . $filename, 0644);
 
+                // Also ensure a copy exists in storage/app/public/
+                @copy($primaryDir . '/' . $filename, $storageDir . '/' . $filename);
+                @chmod($storageDir . '/' . $filename, 0644);
+
                 // Also sync to ../public_html if running on cPanel structure
                 $publicHtmlDir = base_path('../public_html/' . $cleanSub);
                 if (file_exists(base_path('../public_html')) && is_dir(base_path('../public_html'))) {
@@ -2107,7 +2111,7 @@ class AdminController extends Controller
                     @chmod($publicHtmlDir . '/' . $filename, 0644);
                 }
 
-                return $cleanSub . '/' . $filename;
+                return 'storage/' . $cleanSub . '/' . $filename;
             } catch (\Throwable $e) {
                 // If moving to primary still fails, proceed to storage fallback
             }
@@ -2134,7 +2138,7 @@ class AdminController extends Controller
             \Illuminate\Support\Facades\Log::error('safeUploadImage failed: ' . $e->getMessage());
         }
 
-        return $cleanSub . '/' . $filename;
+        return 'storage/' . $cleanSub . '/' . $filename;
     }
 
     public function stallBookingSettings()

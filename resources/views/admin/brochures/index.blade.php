@@ -138,9 +138,20 @@
 
         <div style="display: grid; grid-template-columns: repeat({{ count($homeBrochures) > 0 ? min(count($homeBrochures), 3) : 3 }}, 1fr); gap: 20px; max-width: 950px; margin: 0 auto 25px auto;">
             @foreach($homeBrochures as $idx => $hb)
+                @php
+                    $hbRaw = $hb['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+                    $cleanHb = ltrim($hbRaw, '/');
+                    if (str_starts_with($cleanHb, 'storage/')) {
+                        $hbImg = asset($cleanHb);
+                    } elseif (preg_match('/^\d+_/', basename($cleanHb)) || file_exists(storage_path('app/public/' . $cleanHb))) {
+                        $hbImg = asset('storage/' . $cleanHb);
+                    } else {
+                        $hbImg = asset($cleanHb);
+                    }
+                @endphp
                 <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 8px; text-align: center;">
-                    <a href="{{ asset($hb['image']) }}" target="_blank" title="Click to view full HD">
-                        <img src="{{ asset($hb['image']) }}" alt="{{ $hb['title'] }}" onerror="this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}';" style="width: 100%; height: auto; max-height: 280px; object-fit: contain; border-radius: 8px; border: 1px solid #f1f5f9; display: block; image-rendering: -webkit-optimize-contrast;">
+                    <a href="{{ $hbImg }}" target="_blank" title="Click to view full HD">
+                        <img src="{{ $hbImg }}" alt="{{ $hb['title'] }}" onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); } else { this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}'; }" style="width: 100%; height: auto; max-height: 280px; object-fit: contain; border-radius: 8px; border: 1px solid #f1f5f9; display: block; image-rendering: -webkit-optimize-contrast;">
                     </a>
                     <div style="margin-top: 8px; font-size: 0.78rem; font-weight: 700; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $hb['title'] }}</div>
                 </div>
@@ -234,9 +245,20 @@
 
                             <div>
                                 <label class="form-label">Current Image (HD)</label>
+                                @php
+                                    $rowRaw = $hb['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+                                    $cleanRow = ltrim($rowRaw, '/');
+                                    if (str_starts_with($cleanRow, 'storage/')) {
+                                        $rowImg = asset($cleanRow);
+                                    } elseif (preg_match('/^\d+_/', basename($cleanRow)) || file_exists(storage_path('app/public/' . $cleanRow))) {
+                                        $rowImg = asset('storage/' . $cleanRow);
+                                    } else {
+                                        $rowImg = asset($cleanRow);
+                                    }
+                                @endphp
                                 <div style="display: flex; align-items: center; gap: 10px;">
-                                    <a href="{{ asset($hb['image']) }}" target="_blank" title="View Full HD" style="display: inline-block;">
-                                        <img src="{{ asset($hb['image']) }}" alt="{{ $hb['title'] }}" id="home_brochure_preview_img_{{ $idx }}" onerror="this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}';" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px; image-rendering: -webkit-optimize-contrast;">
+                                    <a href="{{ $rowImg }}" target="_blank" title="View Full HD" style="display: inline-block;">
+                                        <img src="{{ $rowImg }}" alt="{{ $hb['title'] }}" id="home_brochure_preview_img_{{ $idx }}" onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); } else { this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}'; }" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px; image-rendering: -webkit-optimize-contrast;">
                                     </a>
                                     <input type="hidden" name="home_brochure_existing_images[]" value="{{ $hb['image'] }}">
                                 </div>

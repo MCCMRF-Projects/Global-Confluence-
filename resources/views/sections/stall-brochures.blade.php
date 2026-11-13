@@ -243,7 +243,14 @@
                         } elseif (str_starts_with($rawPath, 'https://')) {
                             $imgSrc = $rawPath;
                         } else {
-                            $imgSrc = asset(ltrim($rawPath, '/'));
+                            $cleanPath = ltrim($rawPath, '/');
+                            if (str_starts_with($cleanPath, 'storage/')) {
+                                $imgSrc = asset($cleanPath);
+                            } elseif (preg_match('/^\d+_/', basename($cleanPath)) || file_exists(storage_path('app/public/' . $cleanPath))) {
+                                $imgSrc = asset('storage/' . $cleanPath);
+                            } else {
+                                $imgSrc = asset($cleanPath);
+                            }
                             if (!app()->environment('local') && str_starts_with($imgSrc, 'http://')) {
                                 $imgSrc = 'https://' . substr($imgSrc, 7);
                             }
@@ -262,7 +269,7 @@
                                      alt="{{ $bTitle }}" 
                                      class="brochure-main-img" 
                                      loading="lazy"
-                                     onerror="if(this.src!=='{{ $fallbackUrl }}'){ this.onerror=null; this.src='{{ $fallbackUrl }}'; }">
+                                     onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); } else if (!this.dataset.triedFallback) { this.dataset.triedFallback = '1'; this.src = '{{ $fallbackUrl }}'; }">
                             </div>
                         </a>
                     </div>

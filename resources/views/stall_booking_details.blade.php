@@ -174,7 +174,14 @@
                 } elseif (str_starts_with($rawImg, 'https://')) {
                     $imgSrc = $rawImg;
                 } else {
-                    $imgSrc = asset(ltrim($rawImg, '/'));
+                    $cleanImg = ltrim($rawImg, '/');
+                    if (str_starts_with($cleanImg, 'storage/')) {
+                        $imgSrc = asset($cleanImg);
+                    } elseif (preg_match('/^\d+_/', basename($cleanImg)) || file_exists(storage_path('app/public/' . $cleanImg))) {
+                        $imgSrc = asset('storage/' . $cleanImg);
+                    } else {
+                        $imgSrc = asset($cleanImg);
+                    }
                     if (!app()->environment('local') && str_starts_with($imgSrc, 'http://')) {
                         $imgSrc = 'https://' . substr($imgSrc, 7);
                     }
@@ -191,7 +198,7 @@
                      alt="{{ $bTitle }}" 
                      class="details-brochure-img" 
                      loading="lazy" 
-                     onerror="if(this.src!=='{{ $fallbackImg }}'){ this.onerror=null; this.src='{{ $fallbackImg }}'; }"
+                     onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); } else if (!this.dataset.triedFallback) { this.dataset.triedFallback = '1'; this.src = '{{ $fallbackImg }}'; }"
                      onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" 
                      title="Click to open Full Resolution Zoom">
 

@@ -148,11 +148,31 @@
             if ($rawImg === 'images/stall_booking/stall_brochure_1.jpg' && file_exists(public_path('images/stall_booking/stall_brochure_1.png'))) {
                 $rawImg = 'images/stall_booking/stall_brochure_1.png';
             }
-            $imgSrc = asset($rawImg);
+            $cleanImg = ltrim($rawImg, '/');
+            if (str_starts_with($cleanImg, 'storage/')) {
+                $imgSrc = asset($cleanImg);
+            } elseif (preg_match('/^\d+_/', basename($cleanImg)) || file_exists(storage_path('app/public/' . $cleanImg))) {
+                $imgSrc = asset('storage/' . $cleanImg);
+            } else {
+                $imgSrc = asset($cleanImg);
+            }
+            if (!app()->environment('local') && str_starts_with($imgSrc, 'http://')) {
+                $imgSrc = 'https://' . substr($imgSrc, 7);
+            }
             $bTitle = $brochure['title'] ?? 'Brochure ' . ($index + 1);
+            $fallbackImg = asset('images/stall_booking/stall_brochure_1.png');
+            if (!app()->environment('local') && str_starts_with($fallbackImg, 'http://')) {
+                $fallbackImg = 'https://' . substr($fallbackImg, 7);
+            }
         @endphp
         <div class="brochure-card">
-            <img src="{{ $imgSrc }}" alt="{{ $bTitle }}" class="brochure-img" loading="lazy" onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" title="Click to open Full Resolution Zoom">
+            <img src="{{ $imgSrc }}" 
+                 alt="{{ $bTitle }}" 
+                 class="brochure-img" 
+                 loading="lazy" 
+                 onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); } else if (!this.dataset.triedFallback) { this.dataset.triedFallback = '1'; this.src = '{{ $fallbackImg }}'; }"
+                 onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" 
+                 title="Click to open Full Resolution Zoom">
             <div class="brochure-actions">
                 <button type="button" onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" class="btn-view-full" style="cursor: pointer;">
                     <i class="fa-solid fa-up-right-and-down-left-from-center"></i> View Full Resolution (HD Zoom)

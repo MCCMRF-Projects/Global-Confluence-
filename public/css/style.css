@@ -76,7 +76,9 @@ h6 {
     white-space: nowrap;
 }
 
-.topbar-left, .topbar-center, .topbar-right {
+.topbar-left,
+.topbar-center,
+.topbar-right {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -335,9 +337,10 @@ h6 {
 .nav-dropdown-accordion.open .accordion-arrow {
     transform: rotate(180deg);
 }
-    display: none;
-    /* No underline on dropdown items */
-}
+
+display: none;
+/* No underline on dropdown items */
+
 
 .nav-dropdown-content a:last-child {
     border-bottom: none;
@@ -1593,7 +1596,7 @@ h6 {
         height: auto;
     }
 
-    .venue-grid > img {
+    .venue-grid>img {
         height: 300px;
     }
 
@@ -1604,7 +1607,7 @@ h6 {
         gap: 20px;
     }
 
-    .venue-stack > img {
+    .venue-stack>img {
         height: 200px;
     }
 
@@ -1727,7 +1730,7 @@ align-items: flex-start;
 }
 
 .page-banner-content,
-.page-banner > div,
+.page-banner>div,
 .page-banner h1,
 .page-banner p {
     position: relative;
@@ -2209,7 +2212,7 @@ align-items: flex-start;
     .reg-form-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .reg-form-grid .form-group {
         grid-column: 1 / -1 !important;
     }
@@ -2220,19 +2223,25 @@ align-items: flex-start;
 }
 
 @media (max-width: 768px) {
-    .payment-option, .pay-method-option {
+
+    .payment-option,
+    .pay-method-option {
         width: 100% !important;
         box-sizing: border-box !important;
         flex-direction: column !important;
         align-items: stretch !important;
         gap: 15px !important;
     }
-    .payment-option strong, .addon-selection strong {
+
+    .payment-option strong,
+    .addon-selection strong {
         margin-left: 37px !important;
     }
-    .pay-method-option > div:last-child {
+
+    .pay-method-option>div:last-child {
         margin-left: 37px !important;
     }
+
     .reg-actions button {
         width: 100% !important;
     }
@@ -2664,7 +2673,8 @@ align-items: flex-start;
     .dl-text {
         z-index: 1;
         width: 100%;
-        padding-right: 20px; /* Space for the arrow */
+        padding-right: 20px;
+        /* Space for the arrow */
     }
 
     .dl-arrow {
@@ -2942,7 +2952,7 @@ align-items: flex-start;
         flex-direction: row;
         justify-content: flex-start;
         align-items: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
         text-align: left !important;
         gap: 20px;
     }
@@ -3006,13 +3016,15 @@ align-items: flex-start;
         gap: 15px;
         background-color: #ffffff;
         border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
     }
+
     .workshop-feature h4 {
         font-size: 1.05rem !important;
         margin-bottom: 5px !important;
         text-align: left !important;
     }
+
     .workshop-feature p {
         font-size: 0.9rem !important;
         line-height: 1.4 !important;
@@ -3089,43 +3101,43 @@ align-items: flex-start;
         padding: 30px 4% 30px 4%;
     }
 
-/* ================== Floating WhatsApp ================== */
-.whatsapp-float {
-    position: fixed;
-    width: 60px;
-    height: 60px;
-    bottom: 40px;
-    right: 40px;
-    background-color: #25d366;
-    color: #FFF;
-    border-radius: 50px;
-    text-align: center;
-    font-size: 30px;
-    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.whatsapp-float:hover {
-    background-color: #128C7E;
-    color: #FFF;
-    transform: scale(1.1);
-    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
-}
-
-@media screen and (max-width: 767px) {
+    /* ================== Floating WhatsApp ================== */
     .whatsapp-float {
-        width: 50px;
-        height: 50px;
-        bottom: 20px;
-        right: 20px;
-        font-size: 26px;
+        position: fixed;
+        width: 60px;
+        height: 60px;
+        bottom: 40px;
+        right: 40px;
+        background-color: #25d366;
+        color: #FFF;
+        border-radius: 50px;
+        text-align: center;
+        font-size: 30px;
+        box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
     }
-}
+
+    .whatsapp-float:hover {
+        background-color: #128C7E;
+        color: #FFF;
+        transform: scale(1.1);
+        box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    @media screen and (max-width: 767px) {
+        .whatsapp-float {
+            width: 50px;
+            height: 50px;
+            bottom: 20px;
+            right: 20px;
+            font-size: 26px;
+        }
+    }
 
     .venue-mobile-images {
         display: grid;
@@ -3141,6 +3153,7 @@ align-items: flex-start;
         border-radius: 10px;
     }
 }
+
 /* ================== Registration Page Styling ================== */
 .registration-section {
     padding: 60px 5%;
@@ -3207,7 +3220,7 @@ align-items: flex-start;
     .registration-section {
         padding: 40px 5%;
     }
-    
+
     .reg-form-grid {
         display: flex;
         flex-direction: column;
@@ -3234,8 +3247,8 @@ align-items: flex-start;
         box-sizing: border-box;
     }
 
-    .payment-option > div,
-    .pay-method-option > div {
+    .payment-option>div,
+    .pay-method-option>div {
         width: 100%;
         min-width: 0;
         text-align: left !important;
@@ -3252,10 +3265,11 @@ align-items: flex-start;
 
     .payment-option strong {
         align-self: flex-start;
-        margin-left: 37px; /* Align with text, after radio/checkbox */
+        margin-left: 37px;
+        /* Align with text, after radio/checkbox */
     }
-    
-    .pay-method-option > div:last-child {
+
+    .pay-method-option>div:last-child {
         margin-left: 37px;
     }
 
@@ -3264,7 +3278,7 @@ align-items: flex-start;
         width: 100% !important;
         box-sizing: border-box;
     }
-    
+
     .btn-teal {
         width: 100%;
     }

@@ -72,6 +72,15 @@ Route::get('/storage-file/{path}', function ($path) {
 Route::get('/images/{path}', function ($path) {
     $cleanPath = ltrim(str_replace(['../', '..\\'], '', $path), '/');
     $decodedPath = urldecode($cleanPath);
+
+    // Fast-path: If file exists in storage/app/public, redirect to /storage/ URL so LiteSpeed serves it directly
+    if (file_exists(storage_path('app/public/images/' . $cleanPath)) || file_exists(storage_path('app/public/images/' . $decodedPath))) {
+        return redirect('/storage/images/' . $cleanPath);
+    }
+    if (file_exists(storage_path('app/public/' . $cleanPath)) || file_exists(storage_path('app/public/' . $decodedPath))) {
+        return redirect('/storage/' . $cleanPath);
+    }
+
     $candidates = [
         public_path('images/' . $cleanPath),
         public_path('images/' . $decodedPath),
