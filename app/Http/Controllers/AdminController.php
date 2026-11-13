@@ -2151,18 +2151,8 @@ class AdminController extends Controller
         if (empty($homeBrochures)) {
             $homeBrochures = [
                 [
-                    'title' => 'Partnership Avenues for Analytical Service Providers',
+                    'title' => 'Global One Health Confluence 2026 Brochure',
                     'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.png')) ? 'images/stall_booking/stall_brochure_1.png' : 'images/stall_booking/stall_brochure_1.jpg',
-                    'url' => '/page/stall-booking-details',
-                ],
-                [
-                    'title' => 'Partnership Avenues for Hospitals & Health Sectors',
-                    'image' => 'images/stall_booking/stall_brochure_3.png',
-                    'url' => '/page/stall-booking-details',
-                ],
-                [
-                    'title' => 'Tariff Details & Sponsorship Opportunities',
-                    'image' => 'images/stall_booking/stall_brochure_4.png',
                     'url' => '/page/stall-booking-details',
                 ],
             ];
@@ -2336,18 +2326,8 @@ class AdminController extends Controller
         if (empty($homeBrochures)) {
             $homeBrochures = [
                 [
-                    'title' => 'Partnership Avenues for Analytical Service Providers',
+                    'title' => 'Global One Health Confluence 2026 Brochure',
                     'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.png')) ? 'images/stall_booking/stall_brochure_1.png' : 'images/stall_booking/stall_brochure_1.jpg',
-                    'url' => '/page/stall-booking-details',
-                ],
-                [
-                    'title' => 'Partnership Avenues for Hospitals & Health Sectors',
-                    'image' => 'images/stall_booking/stall_brochure_3.png',
-                    'url' => '/page/stall-booking-details',
-                ],
-                [
-                    'title' => 'Tariff Details & Sponsorship Opportunities',
-                    'image' => 'images/stall_booking/stall_brochure_4.png',
                     'url' => '/page/stall-booking-details',
                 ],
             ];

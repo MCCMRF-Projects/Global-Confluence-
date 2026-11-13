@@ -708,6 +708,18 @@ Route::get('/sync-db-settings', function () {
         \App\Models\SiteSetting::updateOrCreate(['key' => 'hero_btn2_text'], ['value' => 'APPLY FOR AWARDS', 'group' => 'hero', 'type' => 'text', 'label' => 'Secondary Button Text']);
         \App\Models\SiteSetting::updateOrCreate(['key' => 'hero_btn2_link'], ['value' => '/awards', 'group' => 'hero', 'type' => 'text', 'label' => 'Secondary Button Link']);
 
+        // Set single official conference brochure for home section
+        \App\Models\SiteSetting::updateOrCreate(
+            ['key' => 'stall_home_brochures_json', 'group' => 'stall_booking'],
+            ['value' => json_encode([
+                [
+                    'title' => 'Global One Health Confluence 2026 Brochure',
+                    'image' => 'images/stall_booking/stall_brochure_1.png',
+                    'url' => '/page/stall-booking-details'
+                ]
+            ])]
+        );
+
         $seeder = new \Database\Seeders\SiteSettingSeeder();
         $seeder->run();
 

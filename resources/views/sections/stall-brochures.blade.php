@@ -23,18 +23,8 @@
     if (empty($homeBrochures)) {
         $homeBrochures = [
             [
-                'title' => 'Partnership Avenues for Analytical Service Providers',
+                'title' => 'Global One Health Confluence 2026 Brochure',
                 'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.png')) ? 'images/stall_booking/stall_brochure_1.png' : 'images/stall_booking/stall_brochure_1.jpg',
-                'url' => $stallPageUrl,
-            ],
-            [
-                'title' => 'Partnership Avenues for Hospitals & Health Sectors',
-                'image' => 'images/stall_booking/stall_brochure_3.png',
-                'url' => $stallPageUrl,
-            ],
-            [
-                'title' => 'Tariff Details & Sponsorship Opportunities',
-                'image' => 'images/stall_booking/stall_brochure_4.png',
                 'url' => $stallPageUrl,
             ],
         ];
@@ -225,16 +215,18 @@
             }
         </style>
 
-        <!-- 3-Card Swipe Slider Container -->
+        <!-- Brochure Slider / Card Container -->
         <div class="brochure-carousel-wrapper">
 
+            @if(count($homeBrochures) > 1)
             <!-- Left Navigation Arrow Button -->
             <button type="button" class="brochure-nav-btn brochure-prev-btn" aria-label="Previous Brochures" onclick="slideBrochures(-1)">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
+            @endif
 
-            <!-- Scrollable / Swipeable Track (3 Cards per View) -->
-            <div id="brochuresTrack" class="brochures-track">
+            <!-- Scrollable / Swipeable Track -->
+            <div id="brochuresTrack" class="brochures-track" style="{{ count($homeBrochures) === 1 ? 'justify-content: center;' : '' }}">
                 @foreach($homeBrochures as $index => $b)
                     @php
                         $rawPath = $b['image'] ?? 'images/stall_booking/stall_brochure_1.png';
@@ -262,7 +254,7 @@
                             $fallbackUrl = 'https://' . substr($fallbackUrl, 7);
                         }
                     @endphp
-                    <div class="brochure-slide-item">
+                    <div class="brochure-slide-item" style="{{ count($homeBrochures) === 1 ? 'flex: 0 0 min(100%, 420px); max-width: 420px;' : '' }}">
                         <a href="{{ $targetUrl }}" class="brochure-img-card" title="{{ $bTitle }}">
                             <div class="brochure-img-frame">
                                 <img src="{{ $imgSrc }}" 
@@ -276,10 +268,12 @@
                 @endforeach
             </div>
 
+            @if(count($homeBrochures) > 1)
             <!-- Right Navigation Arrow Button -->
             <button type="button" class="brochure-nav-btn brochure-next-btn" aria-label="Next Brochures" onclick="slideBrochures(1)">
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
+            @endif
 
         </div>
 
