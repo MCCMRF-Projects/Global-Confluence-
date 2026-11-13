@@ -11,8 +11,20 @@
     $bannerTitle = $settings['stall_banner_title'] ?? 'STALL BOOKING AND MERCHANDISE';
     $bannerSubtitle = $settings['stall_banner_subtitle'] ?? 'Partnership Avenues, Tariff Details & Sponsorship Opportunities | Global One Health Confluence 2026';
     
-    // Default brochures if none configured
-    $brochureList = !empty($brochures) ? $brochures : [];
+    // Resolve brochures dynamically from stall_brochures_json or stall_home_brochures_json
+    $brochureList = [];
+    if (!empty($brochures) && count($brochures) > 0) {
+        $brochureList = $brochures;
+    } elseif (!empty($homeBrochures) && count($homeBrochures) > 0) {
+        $brochureList = $homeBrochures;
+    } else {
+        $rawSettings = \App\Models\SiteSetting::where('group', 'stall_booking')
+            ->whereIn('key', ['stall_brochures_json', 'stall_home_brochures_json'])
+            ->pluck('value', 'key');
+        $b1 = !empty($rawSettings['stall_brochures_json']) ? json_decode($rawSettings['stall_brochures_json'], true) : [];
+        $b2 = !empty($rawSettings['stall_home_brochures_json']) ? json_decode($rawSettings['stall_home_brochures_json'], true) : [];
+        $brochureList = !empty($b1) ? $b1 : (!empty($b2) ? $b2 : []);
+    }
 
     // Default sponsors if none configured
     $sponsorList = !empty($sponsors) ? $sponsors : [

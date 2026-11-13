@@ -2220,11 +2220,6 @@ class AdminController extends Controller
             }
         }
 
-        \App\Models\SiteSetting::updateOrCreate(
-            ['key' => 'stall_home_brochures_json', 'group' => 'stall_booking'],
-            ['value' => json_encode(array_values($homeBrochures))]
-        );
-
         // Process Brochures
         $bTitles = $request->input('brochure_titles', []);
         $bExistingImages = $request->input('brochure_existing_images', []);
@@ -2259,9 +2254,16 @@ class AdminController extends Controller
             }
         }
 
+        // Automatically sync to stall_brochures_json so /page/stall-booking-and-merchandise has the brochures
+        $finalBrochures = !empty($brochures) ? $brochures : $homeBrochures;
         \App\Models\SiteSetting::updateOrCreate(
             ['key' => 'stall_brochures_json', 'group' => 'stall_booking'],
-            ['value' => json_encode(array_values($brochures))]
+            ['value' => json_encode(array_values($finalBrochures))]
+        );
+
+        \App\Models\SiteSetting::updateOrCreate(
+            ['key' => 'stall_home_brochures_json', 'group' => 'stall_booking'],
+            ['value' => json_encode(array_values($homeBrochures))]
         );
 
         // Process Sponsors

@@ -250,7 +250,7 @@
                 </div>
                 <div>
                     <label class="form-label">Bottom Button Target URL</label>
-                    <input type="text" name="stall_home_btn_url" value="{{ $settings['stall_home_btn_url'] ?? '/page/stall-booking-details' }}" class="form-input">
+                    <input type="text" name="stall_home_btn_url" value="{{ $settings['stall_home_btn_url'] ?? '/page/stall-booking-and-merchandise' }}" class="form-input">
                 </div>
                 <div>
                     <label class="form-label">Show Button</label>
@@ -293,7 +293,7 @@
 
                             <div>
                                 <label class="form-label">Target Link URL</label>
-                                <input type="text" name="home_brochure_urls[]" value="{{ $hb['url'] ?? '/page/stall-booking-details' }}" class="form-input">
+                                <input type="text" name="home_brochure_urls[]" value="{{ $hb['url'] ?? '/page/stall-booking-and-merchandise' }}" class="form-input">
                             </div>
 
                             <div>
@@ -662,7 +662,7 @@
                 </div>
                 <div>
                     <label class="form-label">Target Link URL</label>
-                    <input type="text" name="home_brochure_urls[]" value="/page/stall-booking-details" class="form-input">
+                    <input type="text" name="home_brochure_urls[]" value="/page/stall-booking-and-merchandise" class="form-input">
                 </div>
                 <div>
                     <label class="form-label">Instant HD Preview</label>
