@@ -788,7 +788,10 @@ Route::get('/git-pull', function () {
                 'resources/views/admin/conference_brochures/index.blade.php',
             ];
             $syncCount = 0;
-            $rawBase = 'https://raw.githubusercontent.com/Zubairyasalam/Global-Confluence-/main/';
+            $rawBases = [
+                'https://raw.githubusercontent.com/MCCMRF-Projects/Global-Confluence-/main/',
+                'https://raw.githubusercontent.com/Zubairyasalam/Global-Confluence-/main/',
+            ];
             $ctx = stream_context_create([
                 'http' => [
                     'timeout' => 8,
@@ -801,7 +804,13 @@ Route::get('/git-pull', function () {
             ]);
 
             foreach ($githubFiles as $rel) {
-                $rawContent = @file_get_contents($rawBase . $rel, false, $ctx);
+                $rawContent = false;
+                foreach ($rawBases as $base) {
+                    $rawContent = @file_get_contents($base . $rel, false, $ctx);
+                    if ($rawContent !== false && strlen($rawContent) > 20) {
+                        break;
+                    }
+                }
                 if ($rawContent !== false && strlen($rawContent) > 20) {
                     $dest = base_path($rel);
                     $destDir = dirname($dest);
