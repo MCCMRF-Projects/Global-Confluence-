@@ -2071,16 +2071,16 @@ class AdminController extends Controller
         $primaryDir = public_path($cleanSub);
         $storageDir = storage_path('app/public/' . $cleanSub);
 
-        // Ensure directories exist with 0777
+        // Ensure directories exist with 0755
         if (!file_exists($primaryDir)) {
-            @mkdir($primaryDir, 0777, true);
+            @mkdir($primaryDir, 0755, true);
         }
-        @chmod($primaryDir, 0777);
+        @chmod($primaryDir, 0755);
 
         if (!file_exists($storageDir)) {
-            @mkdir($storageDir, 0777, true);
+            @mkdir($storageDir, 0755, true);
         }
-        @chmod($storageDir, 0777);
+        @chmod($storageDir, 0755);
 
         // Test if primaryDir is actually writable
         $primaryWritable = false;
@@ -2095,15 +2095,16 @@ class AdminController extends Controller
         if ($primaryWritable) {
             try {
                 $file->move($primaryDir, $filename);
-                @chmod($primaryDir . '/' . $filename, 0666);
+                @chmod($primaryDir . '/' . $filename, 0644);
 
                 // Also sync to ../public_html if running on cPanel structure
                 $publicHtmlDir = base_path('../public_html/' . $cleanSub);
                 if (file_exists(base_path('../public_html')) && is_dir(base_path('../public_html'))) {
                     if (!file_exists($publicHtmlDir)) {
-                        @mkdir($publicHtmlDir, 0777, true);
+                        @mkdir($publicHtmlDir, 0755, true);
                     }
                     @copy($primaryDir . '/' . $filename, $publicHtmlDir . '/' . $filename);
+                    @chmod($publicHtmlDir . '/' . $filename, 0644);
                 }
 
                 return $cleanSub . '/' . $filename;
@@ -2115,17 +2116,19 @@ class AdminController extends Controller
         // Fallback: move to storage/app/public/...
         try {
             $file->move($storageDir, $filename);
-            @chmod($storageDir . '/' . $filename, 0666);
+            @chmod($storageDir . '/' . $filename, 0644);
             // Also attempt to copy to primaryDir if permissions permit
             @copy($storageDir . '/' . $filename, $primaryDir . '/' . $filename);
+            @chmod($primaryDir . '/' . $filename, 0644);
 
             // Also sync to ../public_html if present
             $publicHtmlDir = base_path('../public_html/' . $cleanSub);
             if (file_exists(base_path('../public_html')) && is_dir(base_path('../public_html'))) {
                 if (!file_exists($publicHtmlDir)) {
-                    @mkdir($publicHtmlDir, 0777, true);
+                    @mkdir($publicHtmlDir, 0755, true);
                 }
                 @copy($storageDir . '/' . $filename, $publicHtmlDir . '/' . $filename);
+                @chmod($publicHtmlDir . '/' . $filename, 0644);
             }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('safeUploadImage failed: ' . $e->getMessage());

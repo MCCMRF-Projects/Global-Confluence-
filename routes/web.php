@@ -33,7 +33,13 @@ Route::get('/storage-file/{path}', function ($path) {
     }
 
     if (!$filePath || !file_exists($filePath)) {
-        abort(404, 'File not found');
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        http_response_code(404);
+        header('Content-Type: text/plain');
+        echo 'File not found';
+        exit;
     }
 
     $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
@@ -73,6 +79,8 @@ Route::get('/images/{path}', function ($path) {
         base_path('../public_html/images/' . $decodedPath),
         public_path($cleanPath),
         public_path($decodedPath),
+        base_path('../public_html/' . $cleanPath),
+        base_path('../public_html/' . $decodedPath),
         storage_path('app/public/images/' . $cleanPath),
         storage_path('app/public/images/' . $decodedPath),
         storage_path('app/public/' . $cleanPath),
@@ -92,10 +100,12 @@ Route::get('/images/{path}', function ($path) {
         // Fallback for stall booking images if specific file is missing
         if (str_contains($cleanPath, 'stall_booking') || str_contains($cleanPath, 'brochure')) {
             $fallbacks = [
-                public_path('images/stall_booking/stall_brochure_1.jpg'),
                 public_path('images/stall_booking/stall_brochure_1.png'),
-                base_path('../public_html/images/stall_booking/stall_brochure_1.jpg'),
+                public_path('images/stall_booking/stall_brochure_1.jpg'),
                 base_path('../public_html/images/stall_booking/stall_brochure_1.png'),
+                base_path('../public_html/images/stall_booking/stall_brochure_1.jpg'),
+                storage_path('app/public/images/stall_booking/stall_brochure_1.png'),
+                storage_path('app/public/images/stall_booking/stall_brochure_1.jpg'),
             ];
             foreach ($fallbacks as $fb) {
                 if (file_exists($fb)) {
@@ -107,7 +117,13 @@ Route::get('/images/{path}', function ($path) {
     }
 
     if (!$filePath || !file_exists($filePath)) {
-        abort(404);
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        http_response_code(404);
+        header('Content-Type: text/plain');
+        echo 'File not found';
+        exit;
     }
 
     $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
@@ -723,7 +739,52 @@ Route::get('/git-pull', function () {
             @exec('git pull origin main 2>&1', $output, $returnVar);
             @exec('git log -n 1 --oneline 2>&1', $gitLog);
         } else {
-            $output[] = "PHP exec() is disabled on this server. Please pull changes via cPanel Git Version Control or SSH terminal.";
+            $output[] = "PHP exec() is disabled on this server. Proceeding with direct GitHub repository synchronization...";
+        }
+
+        // Direct GitHub synchronization fallback if git command line is not accessible
+        if (!empty($output) && ($returnVar !== 0 || !function_exists('exec'))) {
+            $githubFiles = [
+                'routes/web.php',
+                'app/Http/Controllers/AdminController.php',
+                'app/Providers/AppServiceProvider.php',
+                'bootstrap/app.php',
+                'resources/views/sections/stall-brochures.blade.php',
+                'resources/views/stall_booking_details.blade.php',
+                'resources/views/admin/stall_booking/details.blade.php',
+                'resources/views/admin/stall_booking/index.blade.php',
+                'resources/views/admin/conference_brochures/index.blade.php',
+            ];
+            $syncCount = 0;
+            $rawBase = 'https://raw.githubusercontent.com/Zubairyasalam/Global-Confluence-/main/';
+            $ctx = stream_context_create([
+                'http' => [
+                    'timeout' => 8,
+                    'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\n"
+                ],
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ]
+            ]);
+
+            foreach ($githubFiles as $rel) {
+                $rawContent = @file_get_contents($rawBase . $rel, false, $ctx);
+                if ($rawContent !== false && strlen($rawContent) > 20) {
+                    $dest = base_path($rel);
+                    $destDir = dirname($dest);
+                    if (!file_exists($destDir)) {
+                        @mkdir($destDir, 0755, true);
+                    }
+                    if (@file_put_contents($dest, $rawContent) !== false) {
+                        @chmod($dest, 0644);
+                        $syncCount++;
+                    }
+                }
+            }
+            if ($syncCount > 0) {
+                $output[] = "Direct GitHub Sync: Updated {$syncCount} core files directly from GitHub main branch!";
+            }
         }
         
         \Illuminate\Support\Facades\Artisan::call('view:clear');
@@ -763,9 +824,9 @@ Route::get('/git-pull', function () {
         ];
         foreach ($uploadDirs as $dir) {
             if (!file_exists($dir)) {
-                @mkdir($dir, 0777, true);
+                @mkdir($dir, 0755, true);
             }
-            @chmod($dir, 0777);
+            @chmod($dir, 0755);
         }
 
         // Sync images to ../public_html/images/stall_booking if public_html exists
@@ -774,13 +835,14 @@ Route::get('/git-pull', function () {
             $srcStall = public_path('images/stall_booking');
             $dstStall = $publicHtml . '/images/stall_booking';
             if (!file_exists($dstStall)) {
-                @mkdir($dstStall, 0777, true);
+                @mkdir($dstStall, 0755, true);
             }
             if (file_exists($srcStall) && is_dir($srcStall)) {
                 $files = @scandir($srcStall) ?: [];
                 foreach ($files as $f) {
                     if ($f !== '.' && $f !== '..' && is_file($srcStall . '/' . $f)) {
                         @copy($srcStall . '/' . $f, $dstStall . '/' . $f);
+                        @chmod($dstStall . '/' . $f, 0644);
                     }
                 }
             }
