@@ -20,11 +20,14 @@
         $homeBrochures = json_decode($stallSettings['stall_home_brochures_json'], true) ?: [];
     }
 
+    // Strictly keep only 1 image card for the section as requested
+    $homeBrochures = array_slice($homeBrochures, 0, 1);
+
     if (empty($homeBrochures)) {
         $homeBrochures = [
             [
                 'title' => 'Global One Health Confluence 2026 Brochure',
-                'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.png')) ? 'images/stall_booking/stall_brochure_1.png' : 'images/stall_booking/stall_brochure_1.jpg',
+                'image' => 'storage/images/stall_booking/1794561509_zubair_innov.png',
                 'url' => $stallPageUrl,
             ],
         ];
@@ -229,7 +232,7 @@
             <div id="brochuresTrack" class="brochures-track" style="{{ count($homeBrochures) === 1 ? 'justify-content: center;' : '' }}">
                 @foreach($homeBrochures as $index => $b)
                     @php
-                        $rawPath = $b['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+                        $rawPath = $b['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
                         if (str_starts_with($rawPath, 'http://')) {
                             $imgSrc = 'https://' . substr($rawPath, 7);
                         } elseif (str_starts_with($rawPath, 'https://')) {
@@ -249,19 +252,15 @@
                         }
                         $bTitle = $b['title'] ?? 'Conference Brochure';
                         $targetUrl = !empty($b['url']) ? (str_starts_with($b['url'], 'http') ? $b['url'] : url($b['url'])) : $stallPageUrl;
-                        $fallbackUrl = asset('images/stall_booking/stall_brochure_1.png');
-                        if (!app()->environment('local') && str_starts_with($fallbackUrl, 'http://')) {
-                            $fallbackUrl = 'https://' . substr($fallbackUrl, 7);
-                        }
                     @endphp
-                    <div class="brochure-slide-item" style="{{ count($homeBrochures) === 1 ? 'flex: 0 0 min(100%, 420px); max-width: 420px;' : '' }}">
+                    <div class="brochure-slide-item" style="flex: 0 0 min(100%, 460px); max-width: 460px; margin: 0 auto;">
                         <a href="{{ $targetUrl }}" class="brochure-img-card" title="{{ $bTitle }}">
                             <div class="brochure-img-frame">
                                 <img src="{{ $imgSrc }}" 
                                      alt="{{ $bTitle }}" 
                                      class="brochure-main-img" 
                                      loading="lazy"
-                                     onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); } else if (!this.dataset.triedFallback) { this.dataset.triedFallback = '1'; this.src = '{{ $fallbackUrl }}'; }">
+                                     onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); }">
                             </div>
                         </a>
                     </div>

@@ -73,12 +73,16 @@ Route::get('/images/{path}', function ($path) {
     $cleanPath = ltrim(str_replace(['../', '..\\'], '', $path), '/');
     $decodedPath = urldecode($cleanPath);
 
-    // Fast-path: If file exists in storage/app/public, redirect to /storage/ URL so LiteSpeed serves it directly
+    // Fast direct HTTP 302 to /storage/ via raw header so no Laravel session middleware is invoked!
     if (file_exists(storage_path('app/public/images/' . $cleanPath)) || file_exists(storage_path('app/public/images/' . $decodedPath))) {
-        return redirect('/storage/images/' . $cleanPath);
+        while (ob_get_level() > 0) ob_end_clean();
+        header('Location: /storage/images/' . $cleanPath, true, 302);
+        exit;
     }
     if (file_exists(storage_path('app/public/' . $cleanPath)) || file_exists(storage_path('app/public/' . $decodedPath))) {
-        return redirect('/storage/' . $cleanPath);
+        while (ob_get_level() > 0) ob_end_clean();
+        header('Location: /storage/' . $cleanPath, true, 302);
+        exit;
     }
 
     $candidates = [
@@ -106,15 +110,13 @@ Route::get('/images/{path}', function ($path) {
     }
 
     if (!$filePath) {
-        // Fallback for stall booking images if specific file is missing
+        // Fallback for stall booking images to current valid user uploaded brochure
         if (str_contains($cleanPath, 'stall_booking') || str_contains($cleanPath, 'brochure')) {
             $fallbacks = [
-                public_path('images/stall_booking/stall_brochure_1.png'),
-                public_path('images/stall_booking/stall_brochure_1.jpg'),
-                base_path('../public_html/images/stall_booking/stall_brochure_1.png'),
-                base_path('../public_html/images/stall_booking/stall_brochure_1.jpg'),
-                storage_path('app/public/images/stall_booking/stall_brochure_1.png'),
-                storage_path('app/public/images/stall_booking/stall_brochure_1.jpg'),
+                storage_path('app/public/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png'),
+                public_path('images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png'),
+                storage_path('app/public/images/stall_booking/1794566359_zubair_innov.png'),
+                public_path('images/stall_booking/1794566359_zubair_innov.png'),
             ];
             foreach ($fallbacks as $fb) {
                 if (file_exists($fb)) {
@@ -714,11 +716,18 @@ Route::get('/sync-db-settings', function () {
             ['value' => json_encode([
                 [
                     'title' => 'Global One Health Confluence 2026 Brochure',
-                    'image' => 'images/stall_booking/stall_brochure_1.png',
+                    'image' => 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png',
                     'url' => '/page/stall-booking-details'
                 ]
             ])]
         );
+
+        // Purge old brochure banner files from server if they exist
+        foreach (['stall_brochure_1.png', 'stall_brochure_1.jpg', 'stall_brochure_2.png', 'stall_brochure_3.png', 'stall_brochure_4.png'] as $oldF) {
+            @unlink(public_path('images/stall_booking/' . $oldF));
+            @unlink(storage_path('app/public/images/stall_booking/' . $oldF));
+            @unlink(base_path('../public_html/images/stall_booking/' . $oldF));
+        }
 
         $seeder = new \Database\Seeders\SiteSettingSeeder();
         $seeder->run();
@@ -772,8 +781,10 @@ Route::get('/git-pull', function () {
                 'bootstrap/app.php',
                 'resources/views/sections/stall-brochures.blade.php',
                 'resources/views/stall_booking_details.blade.php',
+                'resources/views/stall_booking.blade.php',
                 'resources/views/admin/stall_booking/details.blade.php',
                 'resources/views/admin/stall_booking/index.blade.php',
+                'resources/views/admin/brochures/index.blade.php',
                 'resources/views/admin/conference_brochures/index.blade.php',
             ];
             $syncCount = 0;
@@ -867,6 +878,13 @@ Route::get('/git-pull', function () {
                     }
                 }
             }
+        }
+
+        // Purge old brochure banner files from server if they exist
+        foreach (['stall_brochure_1.png', 'stall_brochure_1.jpg', 'stall_brochure_2.png', 'stall_brochure_3.png', 'stall_brochure_4.png'] as $oldF) {
+            @unlink(public_path('images/stall_booking/' . $oldF));
+            @unlink(storage_path('app/public/images/stall_booking/' . $oldF));
+            @unlink(base_path('../public_html/images/stall_booking/' . $oldF));
         }
 
         return "<div style='font-family: sans-serif; padding: 30px; max-width: 650px; margin: 30px auto; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px;'>

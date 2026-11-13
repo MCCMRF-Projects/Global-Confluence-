@@ -2152,7 +2152,7 @@ class AdminController extends Controller
             $homeBrochures = [
                 [
                     'title' => 'Global One Health Confluence 2026 Brochure',
-                    'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.png')) ? 'images/stall_booking/stall_brochure_1.png' : 'images/stall_booking/stall_brochure_1.jpg',
+                    'image' => 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png',
                     'url' => '/page/stall-booking-details',
                 ],
             ];
@@ -2196,7 +2196,7 @@ class AdminController extends Controller
         foreach ($hbTitles as $idx => $title) {
             if (empty(trim($title))) continue;
 
-            $imgPath = $hbExistingImages[$idx] ?? 'images/stall_booking/stall_brochure_1.png';
+            $imgPath = $hbExistingImages[$idx] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
             if (isset($hbUploadedFiles[$idx]) && $hbUploadedFiles[$idx]->isValid()) {
                 $imgPath = $this->safeUploadImage($hbUploadedFiles[$idx], 'images/stall_booking');
             }
@@ -2235,7 +2235,7 @@ class AdminController extends Controller
         foreach ($bTitles as $idx => $title) {
             if (empty(trim($title))) continue;
 
-            $imgPath = $bExistingImages[$idx] ?? 'images/stall_booking/stall_brochure_1.png';
+            $imgPath = $bExistingImages[$idx] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
             if (isset($bUploadedFiles[$idx]) && $bUploadedFiles[$idx]->isValid()) {
                 $imgPath = $this->safeUploadImage($bUploadedFiles[$idx], 'images/stall_booking');
             }
@@ -2327,7 +2327,7 @@ class AdminController extends Controller
             $homeBrochures = [
                 [
                     'title' => 'Global One Health Confluence 2026 Brochure',
-                    'image' => file_exists(public_path('images/stall_booking/stall_brochure_1.png')) ? 'images/stall_booking/stall_brochure_1.png' : 'images/stall_booking/stall_brochure_1.jpg',
+                    'image' => 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png',
                     'url' => '/page/stall-booking-details',
                 ],
             ];
@@ -2382,7 +2382,7 @@ class AdminController extends Controller
             foreach ($hbTitles as $idx => $title) {
                 if (empty(trim($title))) continue;
 
-                $imgPath = $hbExistingImages[$idx] ?? 'images/stall_booking/stall_brochure_1.png';
+                $imgPath = $hbExistingImages[$idx] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
                 if (isset($hbUploadedFiles[$idx]) && $hbUploadedFiles[$idx]->isValid()) {
                     $imgPath = $this->safeUploadImage($hbUploadedFiles[$idx], 'images/stall_booking');
                 }

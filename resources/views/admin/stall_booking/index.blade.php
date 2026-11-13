@@ -97,10 +97,7 @@
     $bannerSubtitle = $settings['stall_banner_subtitle'] ?? 'Partnership Avenues, Tariff Details & Sponsorship Opportunities | Global One Health Confluence 2026';
     
     $brochureList = !empty($brochures) ? $brochures : [
-        ['title' => 'Partnership Avenues for Analytical Service Providers', 'image' => 'images/stall_booking/stall_brochure_1.png'],
-        ['title' => 'Tariff Details & Sponsorship Opportunities (Matrix)', 'image' => 'images/stall_booking/stall_brochure_2.png'],
-        ['title' => 'Partnership Avenues for Hospitals & Health Sectors', 'image' => 'images/stall_booking/stall_brochure_3.png'],
-        ['title' => 'Tariff Details & Sponsorship Opportunities (Contact & Notes)', 'image' => 'images/stall_booking/stall_brochure_4.png'],
+        ['title' => 'Global One Health Confluence 2026 Brochure', 'image' => 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png'],
     ];
 
     $sponsorList = !empty($sponsors) ? $sponsors : [
@@ -161,7 +158,7 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px;">
                 @foreach($brochureList as $idx => $b)
                     @php
-                        $bRaw = $b['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+                        $bRaw = $b['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
                         $cleanB = ltrim($bRaw, '/');
                         if (str_starts_with($cleanB, 'storage/')) {
                             $bImg = asset($cleanB);
@@ -173,7 +170,7 @@
                     @endphp
                     <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); text-align: center;">
                         <a href="{{ $bImg }}" target="_blank" title="Click to view full resolution HD image" style="display: block; text-decoration: none;">
-                            <img src="{{ $bImg }}" alt="{{ $b['title'] }}" onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); } else { this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}'; }" style="width: 100%; max-height: 200px; object-fit: contain; background: #f8fafc; border-radius: 6px; margin-bottom: 8px; image-rendering: -webkit-optimize-contrast; border: 1px solid #e2e8f0; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                            <img src="{{ $bImg }}" alt="{{ $b['title'] }}" onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); }" style="width: 100%; max-height: 200px; object-fit: contain; background: #f8fafc; border-radius: 6px; margin-bottom: 8px; image-rendering: -webkit-optimize-contrast; border: 1px solid #e2e8f0; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                         </a>
                         <div style="font-size: 0.8rem; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $b['title'] }}</div>
                         <div style="font-size: 0.72rem; color: #00A896; margin-top: 4px; font-weight: 600;">Brochure #{{ $idx + 1 }} &bull; <a href="{{ $bImg }}" target="_blank" style="color: #0284c7; text-decoration: underline;">Full HD ↗</a></div>
@@ -299,7 +296,7 @@
                             <div>
                                 <label class="form-label">Current Preview (HD)</label>
                                 @php
-                                    $hbRaw = $hb['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+                                    $hbRaw = $hb['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
                                     $cleanHb = ltrim($hbRaw, '/');
                                     if (str_starts_with($cleanHb, 'storage/')) {
                                         $hbImg = asset($cleanHb);
@@ -311,7 +308,7 @@
                                 @endphp
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <a href="{{ $hbImg }}" target="_blank" title="Click to view full resolution HD image" style="display: inline-block;">
-                                        <img src="{{ $hbImg }}" alt="{{ $hb['title'] }}" id="home_brochure_preview_img_{{ $idx }}" onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); } else { this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}'; }" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px; image-rendering: -webkit-optimize-contrast;">
+                                        <img src="{{ $hbImg }}" alt="{{ $hb['title'] }}" id="home_brochure_preview_img_{{ $idx }}" onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); }" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px; image-rendering: -webkit-optimize-contrast;">
                                     </a>
                                     <input type="hidden" name="home_brochure_existing_images[]" value="{{ $hb['image'] }}">
                                 </div>
@@ -379,7 +376,7 @@
                             <div>
                                 <label class="form-label">Current Preview (HD)</label>
                                 @php
-                                    $bRaw2 = $brochure['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+                                    $bRaw2 = $brochure['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
                                     $cleanB2 = ltrim($bRaw2, '/');
                                     if (str_starts_with($cleanB2, 'storage/')) {
                                         $bImg2 = asset($cleanB2);
@@ -391,7 +388,7 @@
                                 @endphp
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     <a href="{{ $bImg2 }}" target="_blank" title="Click to view full resolution HD image" style="display: inline-block;">
-                                        <img src="{{ $bImg2 }}" alt="{{ $brochure['title'] }}" id="brochure_preview_img_{{ $index }}" onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); } else { this.onerror=null; this.src='{{ asset('images/stall_booking/stall_brochure_1.png') }}'; }" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
+                                        <img src="{{ $bImg2 }}" alt="{{ $brochure['title'] }}" id="brochure_preview_img_{{ $index }}" onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); }" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
                                     </a>
                                     <div style="display: flex; flex-direction: column; gap: 4px;">
                                         <a href="{{ $bImg2 }}" target="_blank" style="font-size: 0.8rem; font-weight: 700; color: #0284c7; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
@@ -562,8 +559,8 @@
                 <div>
                     <label class="form-label">Instant HD Preview</label>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <img id="${newImgId}" src="{{ asset('images/stall_booking/stall_brochure_1.png') }}" alt="Preview" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
-                        <input type="hidden" name="brochure_existing_images[]" value="images/stall_booking/stall_brochure_1.png">
+                        <img id="${newImgId}" src="{{ asset('storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png') }}" alt="Preview" style="height: 75px; width: auto; max-width: 120px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #f8fafc; padding: 2px; image-rendering: -webkit-optimize-contrast;">
+                        <input type="hidden" name="brochure_existing_images[]" value="storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png">
                     </div>
                 </div>
                 <div>
@@ -655,8 +652,8 @@
                 <div>
                     <label class="form-label">Instant HD Preview</label>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <img id="${newImgId}" src="{{ asset('images/stall_booking/stall_brochure_1.png') }}" alt="Preview" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px;">
-                        <input type="hidden" name="home_brochure_existing_images[]" value="images/stall_booking/stall_brochure_1.png">
+                        <img id="${newImgId}" src="{{ asset('storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png') }}" alt="Preview" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px;">
+                        <input type="hidden" name="home_brochure_existing_images[]" value="storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png">
                     </div>
                 </div>
                 <div>

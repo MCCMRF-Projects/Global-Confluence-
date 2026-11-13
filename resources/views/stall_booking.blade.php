@@ -13,10 +13,7 @@
     
     // Default brochures if none configured
     $brochureList = !empty($brochures) ? $brochures : [
-        ['title' => 'Partnership Avenues for Analytical Service Providers', 'image' => 'images/stall_booking/stall_brochure_1.png'],
-        ['title' => 'Tariff Details & Sponsorship Opportunities (Matrix)', 'image' => 'images/stall_booking/stall_brochure_2.png'],
-        ['title' => 'Partnership Avenues for Hospitals & Health Sectors', 'image' => 'images/stall_booking/stall_brochure_3.png'],
-        ['title' => 'Tariff Details & Sponsorship Opportunities (Contact & Notes)', 'image' => 'images/stall_booking/stall_brochure_4.png'],
+        ['title' => 'Global One Health Confluence 2026 Brochure', 'image' => 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png'],
     ];
 
     // Default sponsors if none configured
@@ -144,10 +141,7 @@
     <!-- Dynamic Brochures List -->
     @foreach($brochureList as $index => $brochure)
         @php
-            $rawImg = $brochure['image'] ?? 'images/stall_booking/stall_brochure_1.png';
-            if ($rawImg === 'images/stall_booking/stall_brochure_1.jpg' && file_exists(public_path('images/stall_booking/stall_brochure_1.png'))) {
-                $rawImg = 'images/stall_booking/stall_brochure_1.png';
-            }
+            $rawImg = $brochure['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
             $cleanImg = ltrim($rawImg, '/');
             if (str_starts_with($cleanImg, 'storage/')) {
                 $imgSrc = asset($cleanImg);
@@ -160,17 +154,13 @@
                 $imgSrc = 'https://' . substr($imgSrc, 7);
             }
             $bTitle = $brochure['title'] ?? 'Brochure ' . ($index + 1);
-            $fallbackImg = asset('images/stall_booking/stall_brochure_1.png');
-            if (!app()->environment('local') && str_starts_with($fallbackImg, 'http://')) {
-                $fallbackImg = 'https://' . substr($fallbackImg, 7);
-            }
         @endphp
         <div class="brochure-card">
             <img src="{{ $imgSrc }}" 
                  alt="{{ $bTitle }}" 
                  class="brochure-img" 
                  loading="lazy" 
-                 onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); } else if (!this.dataset.triedFallback) { this.dataset.triedFallback = '1'; this.src = '{{ $fallbackImg }}'; }"
+                 onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); }"
                  onclick="openLightboxModal('{{ $imgSrc }}', '{{ addslashes($bTitle) }}')" 
                  title="Click to open Full Resolution Zoom">
             <div class="brochure-actions">
