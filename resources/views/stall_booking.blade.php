@@ -12,9 +12,7 @@
     $bannerSubtitle = $settings['stall_banner_subtitle'] ?? 'Partnership Avenues, Tariff Details & Sponsorship Opportunities | Global One Health Confluence 2026';
     
     // Default brochures if none configured
-    $brochureList = !empty($brochures) ? $brochures : [
-        ['title' => 'Global One Health Confluence 2026 Brochure', 'image' => 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png'],
-    ];
+    $brochureList = !empty($brochures) ? $brochures : [];
 
     // Default sponsors if none configured
     $sponsorList = !empty($sponsors) ? $sponsors : [
@@ -139,9 +137,10 @@
 <div class="stall-booking-container">
     
     <!-- Dynamic Brochures List -->
-    @foreach($brochureList as $index => $brochure)
+    @forelse($brochureList as $index => $brochure)
         @php
-            $rawImg = $brochure['image'] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
+            $rawImg = $brochure['image'] ?? '';
+            if (empty($rawImg)) continue;
             $cleanImg = ltrim($rawImg, '/');
             if (str_starts_with($cleanImg, 'storage/')) {
                 $imgSrc = asset($cleanImg);
@@ -172,7 +171,13 @@
                 </a>
             </div>
         </div>
-    @endforeach
+    @empty
+        <div style="text-align: center; padding: 50px 20px; background: #ffffff; border-radius: 16px; border: 1.5px dashed #cbd5e1; color: #64748b; margin-bottom: 25px;">
+            <i class="fa-regular fa-file-image" style="font-size: 2.8rem; color: #94a3b8; margin-bottom: 12px; display: block;"></i>
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Brochures Will Be Available Soon</h3>
+            <p style="margin: 0; font-size: 0.92rem;">Please check back later or contact us for stall booking details.</p>
+        </div>
+    @endforelse
 
     <!-- Quick Payment QR Section for Stall Booking & Tariff -->
     <div style="background: linear-gradient(135deg, #0a192f 0%, #0f172a 100%); border-radius: 16px; border: 1.5px solid #1e293b; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2); padding: 35px 30px; margin: 30px 0; color: #ffffff;">

@@ -136,10 +136,11 @@
             <div style="width: 65px; height: 3.5px; background: linear-gradient(90deg, #009688, #84cc16); margin: 0 auto; border-radius: 4px;"></div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat({{ count($homeBrochures) > 0 ? min(count($homeBrochures), 3) : 3 }}, 1fr); gap: 20px; max-width: 950px; margin: 0 auto 25px auto;">
-            @foreach($homeBrochures as $idx => $hb)
+        <div style="display: grid; grid-template-columns: repeat({{ count($homeBrochures) > 0 ? min(count($homeBrochures), 3) : 1 }}, 1fr); gap: 20px; max-width: 950px; margin: 0 auto 25px auto;">
+            @forelse($homeBrochures as $idx => $hb)
                 @php
-                    $hbRaw = $hb['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+                    $hbRaw = $hb['image'] ?? '';
+                    if (empty($hbRaw)) continue;
                     $cleanHb = ltrim($hbRaw, '/');
                     if (str_starts_with($cleanHb, 'storage/')) {
                         $hbImg = asset($cleanHb);
@@ -155,7 +156,12 @@
                     </a>
                     <div style="margin-top: 8px; font-size: 0.78rem; font-weight: 700; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $hb['title'] }}</div>
                 </div>
-            @endforeach
+            @empty
+                <div style="background: #ffffff; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 35px 20px; text-align: center; color: #64748b; grid-column: 1 / -1;">
+                    <i class="fa-regular fa-image" style="font-size: 2.5rem; color: #94a3b8; display: block; margin-bottom: 8px;"></i>
+                    No brochure cards currently added. The banner is completely empty.
+                </div>
+            @endforelse
         </div>
 
         @if($showBtn)
@@ -246,21 +252,25 @@
                             <div>
                                 <label class="form-label">Current Image (HD)</label>
                                 @php
-                                    $rowRaw = $hb['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+                                    $rowRaw = $hb['image'] ?? '';
                                     $cleanRow = ltrim($rowRaw, '/');
                                     if (str_starts_with($cleanRow, 'storage/')) {
                                         $rowImg = asset($cleanRow);
                                     } elseif (preg_match('/^\d+_/', basename($cleanRow)) || file_exists(storage_path('app/public/' . $cleanRow))) {
                                         $rowImg = asset('storage/' . $cleanRow);
                                     } else {
-                                        $rowImg = asset($cleanRow);
+                                        $rowImg = !empty($cleanRow) ? asset($cleanRow) : '';
                                     }
                                 @endphp
                                 <div style="display: flex; align-items: center; gap: 10px;">
+                                    @if(!empty($rowImg))
                                     <a href="{{ $rowImg }}" target="_blank" title="View Full HD" style="display: inline-block;">
                                         <img src="{{ $rowImg }}" alt="{{ $hb['title'] }}" id="home_brochure_preview_img_{{ $idx }}" onerror="if (!this.dataset.triedStorage && this.src.indexOf('/storage/') === -1) { this.dataset.triedStorage = '1'; this.src = this.src.replace('/images/', '/storage/images/'); }" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px; image-rendering: -webkit-optimize-contrast;">
                                     </a>
-                                    <input type="hidden" name="home_brochure_existing_images[]" value="{{ $hb['image'] }}">
+                                    @else
+                                    <span style="font-size: 0.78rem; color: #94a3b8; padding: 6px 10px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px;">No Image</span>
+                                    @endif
+                                    <input type="hidden" name="home_brochure_existing_images[]" value="{{ $hb['image'] ?? '' }}">
                                 </div>
                             </div>
 
@@ -300,10 +310,13 @@
                 const img = document.getElementById(targetId);
                 if (img) {
                     img.src = e.target.result;
+                    img.style.display = 'block';
                     if (img.parentElement && img.parentElement.tagName === 'A') {
                         img.parentElement.href = e.target.result;
                     }
                 }
+                const ph = document.getElementById(targetId + '_placeholder');
+                if (ph) ph.style.display = 'none';
             };
             reader.readAsDataURL(input.files[0]);
         }
@@ -343,8 +356,9 @@
                 <div>
                     <label class="form-label">Instant HD Preview</label>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <img id="${newImgId}" src="{{ asset('images/stall_booking/stall_brochure_1.png') }}" alt="Preview" style="height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px;">
-                        <input type="hidden" name="home_brochure_existing_images[]" value="images/stall_booking/stall_brochure_1.png">
+                        <img id="${newImgId}" src="" alt="Preview" style="display: none; height: 70px; width: auto; max-width: 100px; object-fit: contain; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #fff; padding: 2px;">
+                        <span id="${newImgId}_placeholder" style="display: inline-block; padding: 6px 10px; background: #f1f5f9; border-radius: 6px; font-size: 0.78rem; color: #64748b;">No image chosen</span>
+                        <input type="hidden" name="home_brochure_existing_images[]" value="">
                     </div>
                 </div>
                 <div>

@@ -109,24 +109,6 @@ Route::get('/images/{path}', function ($path) {
         }
     }
 
-    if (!$filePath) {
-        // Fallback for stall booking images to current valid user uploaded brochure
-        if (str_contains($cleanPath, 'stall_booking') || str_contains($cleanPath, 'brochure')) {
-            $fallbacks = [
-                public_path('images/stall_booking/stall_brochure_1.png'),
-                public_path('images/stall_booking/stall_brochure_1.jpg'),
-                storage_path('app/public/images/stall_booking/stall_brochure_1.png'),
-                storage_path('app/public/images/stall_booking/stall_brochure_1.jpg'),
-            ];
-            foreach ($fallbacks as $fb) {
-                if (file_exists($fb)) {
-                    $filePath = $fb;
-                    break;
-                }
-            }
-        }
-    }
-
     if (!$filePath || !file_exists($filePath)) {
         while (ob_get_level() > 0) {
             ob_end_clean();
@@ -710,28 +692,31 @@ Route::get('/sync-db-settings', function () {
         \App\Models\SiteSetting::updateOrCreate(['key' => 'hero_btn2_text'], ['value' => 'APPLY FOR AWARDS', 'group' => 'hero', 'type' => 'text', 'label' => 'Secondary Button Text']);
         \App\Models\SiteSetting::updateOrCreate(['key' => 'hero_btn2_link'], ['value' => '/awards', 'group' => 'hero', 'type' => 'text', 'label' => 'Secondary Button Link']);
 
-        // Set strictly single official conference brochure banner for home section
+        // Keep brochure banner completely clean and empty by default as requested
         \App\Models\SiteSetting::updateOrCreate(
             ['key' => 'stall_home_brochures_json', 'group' => 'stall_booking'],
-            ['value' => json_encode([
-                [
-                    'title' => 'Global One Health Confluence 2026 Brochure',
-                    'image' => 'images/stall_booking/stall_brochure_1.png',
-                    'url' => '/page/stall-booking-details'
-                ]
-            ])]
+            ['value' => json_encode([])]
         );
 
-        // Also clean stall_brochures_json to strictly contain only the official brochure banner
+        // Also clean stall_brochures_json to be completely empty
         \App\Models\SiteSetting::updateOrCreate(
             ['key' => 'stall_brochures_json', 'group' => 'stall_booking'],
-            ['value' => json_encode([
-                [
-                    'title' => 'Global One Health Confluence 2026 Brochure',
-                    'image' => 'images/stall_booking/stall_brochure_1.png'
-                ]
-            ])]
+            ['value' => json_encode([])]
         );
+
+        // Permanently purge all old brochure flyer files from all directories
+        $unwantedBrochureFiles = [
+            'stall_brochure_1.png', 'stall_brochure_1.jpg', 'stall_brochure_2.png', 'stall_brochure_3.png', 'stall_brochure_4.png',
+            'conference_brochure_official.png', '1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png',
+            '1794550530_Illuminated_INNOVEITY_Corporate_Lobby_Sign__1_.png', '1794550533_Illuminated_INNOVEITY_Corporate_Lobby_Sign__1_.png',
+            '1794552156_zubair_innov.png', '1794566359_zubair_innov.png', '1794570026_Modern_INNOVEITY_Reception_Wall.png'
+        ];
+        foreach ($unwantedBrochureFiles as $oldF) {
+            @unlink(public_path('images/stall_booking/' . $oldF));
+            @unlink(storage_path('app/public/images/stall_booking/' . $oldF));
+            @unlink(base_path('../public_html/images/stall_booking/' . $oldF));
+            @unlink(base_path('../public_html/storage/images/stall_booking/' . $oldF));
+        }
 
         $seeder = new \Database\Seeders\SiteSettingSeeder();
         $seeder->run();

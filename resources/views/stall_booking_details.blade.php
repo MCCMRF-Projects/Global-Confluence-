@@ -34,12 +34,7 @@
     $homeBrochures = array_slice($homeBrochures, 0, 1);
 
     if (empty($homeBrochures)) {
-        $homeBrochures = [
-            [
-                'title' => 'Global One Health Confluence 2026 Brochure',
-                'image' => 'images/stall_booking/stall_brochure_1.png',
-            ],
-        ];
+        $homeBrochures = [];
     }
 @endphp
 
@@ -156,9 +151,10 @@
     <div class="stall-details-container">
 
         <!-- Official Conference Brochure (Master HD Quality) -->
-        @foreach($homeBrochures as $index => $brochure)
+        @forelse($homeBrochures as $index => $brochure)
             @php
-                $rawImg = $brochure['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+                $rawImg = $brochure['image'] ?? '';
+                if (empty($rawImg)) continue;
                 if (str_starts_with($rawImg, 'http://')) {
                     $imgSrc = 'https://' . substr($rawImg, 7);
                 } elseif (str_starts_with($rawImg, 'https://')) {
@@ -198,7 +194,13 @@
                     </a>
                 </div>
             </div>
-        @endforeach
+        @empty
+            <div style="text-align: center; padding: 60px 20px; background: #ffffff; border-radius: 16px; border: 1.5px dashed #cbd5e1; color: #64748b; margin-bottom: 30px;">
+                <i class="fa-regular fa-file-image" style="font-size: 3rem; color: #94a3b8; margin-bottom: 15px; display: block;"></i>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Brochure Details Coming Soon</h3>
+                <p style="margin: 0; font-size: 0.95rem;">New conference brochures will be updated here shortly.</p>
+            </div>
+        @endforelse
 
     </div>
 </div>

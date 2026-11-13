@@ -20,17 +20,9 @@
         $homeBrochures = json_decode($stallSettings['stall_home_brochures_json'], true) ?: [];
     }
 
-    // Strictly keep only 1 image card for the section as requested
-    $homeBrochures = array_slice($homeBrochures, 0, 1);
-
+    // Keep brochure list empty if none uploaded
     if (empty($homeBrochures)) {
-        $homeBrochures = [
-            [
-                'title' => 'Global One Health Confluence 2026 Brochure',
-                'image' => 'images/stall_booking/stall_brochure_1.png',
-                'url' => $stallPageUrl,
-            ],
-        ];
+        $homeBrochures = [];
     }
 @endphp
 
@@ -229,10 +221,11 @@
             @endif
 
             <!-- Scrollable / Swipeable Track -->
-            <div id="brochuresTrack" class="brochures-track" style="{{ count($homeBrochures) === 1 ? 'justify-content: center;' : '' }}">
-                @foreach($homeBrochures as $index => $b)
+            <div id="brochuresTrack" class="brochures-track" style="{{ count($homeBrochures) <= 1 ? 'justify-content: center;' : '' }}">
+                @forelse($homeBrochures as $index => $b)
                     @php
-                        $rawPath = $b['image'] ?? 'images/stall_booking/stall_brochure_1.png';
+                        $rawPath = $b['image'] ?? '';
+                        if (empty($rawPath)) continue;
                         if (str_starts_with($rawPath, 'http://')) {
                             $imgSrc = 'https://' . substr($rawPath, 7);
                         } elseif (str_starts_with($rawPath, 'https://')) {
@@ -264,7 +257,12 @@
                             </div>
                         </a>
                     </div>
-                @endforeach
+                @empty
+                    <div style="text-align: center; padding: 40px 20px; color: #64748b; font-size: 0.95rem; width: 100%;">
+                        <i class="fa-regular fa-image" style="font-size: 2.2rem; color: #94a3b8; display: block; margin-bottom: 10px;"></i>
+                        Brochure will be updated soon.
+                    </div>
+                @endforelse
             </div>
 
             @if(count($homeBrochures) > 1)

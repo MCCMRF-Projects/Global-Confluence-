@@ -2145,17 +2145,14 @@ class AdminController extends Controller
     {
         $settings = \App\Models\SiteSetting::where('group', 'stall_booking')->pluck('value', 'key')->toArray();
         $brochures = isset($settings['stall_brochures_json']) ? json_decode($settings['stall_brochures_json'], true) : [];
+        if (!is_array($brochures)) {
+            $brochures = [];
+        }
         $sponsors = isset($settings['stall_sponsors_json']) ? json_decode($settings['stall_sponsors_json'], true) : [];
 
         $homeBrochures = isset($settings['stall_home_brochures_json']) ? json_decode($settings['stall_home_brochures_json'], true) : [];
-        if (empty($homeBrochures)) {
-            $homeBrochures = [
-                [
-                    'title' => 'Global One Health Confluence 2026 Brochure',
-                    'image' => 'images/stall_booking/stall_brochure_1.png',
-                    'url' => '/page/stall-booking-details',
-                ],
-            ];
+        if (!is_array($homeBrochures)) {
+            $homeBrochures = [];
         }
 
         return view('admin.stall_booking.index', compact('settings', 'brochures', 'sponsors', 'homeBrochures'));
@@ -2196,16 +2193,18 @@ class AdminController extends Controller
         foreach ($hbTitles as $idx => $title) {
             if (empty(trim($title))) continue;
 
-            $imgPath = $hbExistingImages[$idx] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
+            $imgPath = $hbExistingImages[$idx] ?? '';
             if (isset($hbUploadedFiles[$idx]) && $hbUploadedFiles[$idx]->isValid()) {
                 $imgPath = $this->safeUploadImage($hbUploadedFiles[$idx], 'images/stall_booking');
             }
 
-            $homeBrochures[] = [
-                'title' => trim($title),
-                'url' => trim($hbUrls[$idx] ?? '/page/stall-booking-details'),
-                'image' => $imgPath
-            ];
+            if (!empty($imgPath)) {
+                $homeBrochures[] = [
+                    'title' => trim($title),
+                    'url' => trim($hbUrls[$idx] ?? '/page/stall-booking-details'),
+                    'image' => $imgPath
+                ];
+            }
         }
 
         // Check if adding a new home brochure
@@ -2235,15 +2234,17 @@ class AdminController extends Controller
         foreach ($bTitles as $idx => $title) {
             if (empty(trim($title))) continue;
 
-            $imgPath = $bExistingImages[$idx] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
+            $imgPath = $bExistingImages[$idx] ?? '';
             if (isset($bUploadedFiles[$idx]) && $bUploadedFiles[$idx]->isValid()) {
                 $imgPath = $this->safeUploadImage($bUploadedFiles[$idx], 'images/stall_booking');
             }
 
-            $brochures[] = [
-                'title' => trim($title),
-                'image' => $imgPath
-            ];
+            if (!empty($imgPath)) {
+                $brochures[] = [
+                    'title' => trim($title),
+                    'image' => $imgPath
+                ];
+            }
         }
 
         // Check if adding a new brochure
@@ -2323,14 +2324,8 @@ class AdminController extends Controller
         $settings = array_merge($stallSettings, $detailsSettings);
 
         $homeBrochures = isset($stallSettings['stall_home_brochures_json']) ? json_decode($stallSettings['stall_home_brochures_json'], true) : [];
-        if (empty($homeBrochures)) {
-            $homeBrochures = [
-                [
-                    'title' => 'Global One Health Confluence 2026 Brochure',
-                    'image' => 'images/stall_booking/stall_brochure_1.png',
-                    'url' => '/page/stall-booking-details',
-                ],
-            ];
+        if (!is_array($homeBrochures)) {
+            $homeBrochures = [];
         }
         return view('admin.stall_booking.details', compact('settings', 'homeBrochures'));
     }
@@ -2382,16 +2377,18 @@ class AdminController extends Controller
             foreach ($hbTitles as $idx => $title) {
                 if (empty(trim($title))) continue;
 
-                $imgPath = $hbExistingImages[$idx] ?? 'storage/images/stall_booking/1794506923_Illuminated_INNOVEITY_Corporate_Lobby_Sign.png';
+                $imgPath = $hbExistingImages[$idx] ?? '';
                 if (isset($hbUploadedFiles[$idx]) && $hbUploadedFiles[$idx]->isValid()) {
                     $imgPath = $this->safeUploadImage($hbUploadedFiles[$idx], 'images/stall_booking');
                 }
 
-                $homeBrochures[] = [
-                    'title' => trim($title),
-                    'url' => trim($hbUrls[$idx] ?? '/page/stall-booking-details'),
-                    'image' => $imgPath
-                ];
+                if (!empty($imgPath)) {
+                    $homeBrochures[] = [
+                        'title' => trim($title),
+                        'url' => trim($hbUrls[$idx] ?? '/page/stall-booking-details'),
+                        'image' => $imgPath
+                    ];
+                }
             }
         }
 
@@ -2407,12 +2404,11 @@ class AdminController extends Controller
             }
         }
 
-        if (!empty($homeBrochures)) {
-            \App\Models\SiteSetting::updateOrCreate(
-                ['key' => 'stall_home_brochures_json', 'group' => 'stall_booking'],
-                ['value' => json_encode(array_values($homeBrochures))]
-            );
-        }
+        // Always save the brochures array (even if empty, to keep banner clean & empty)
+        \App\Models\SiteSetting::updateOrCreate(
+            ['key' => 'stall_home_brochures_json', 'group' => 'stall_booking'],
+            ['value' => json_encode(array_values($homeBrochures))]
+        );
 
         return back()->with('success', 'Stall Booking Details and Conference Brochures updated successfully.');
     }
